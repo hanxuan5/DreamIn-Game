@@ -5,6 +5,15 @@ using Photon.Pun;
 public class GameManager : MonoBehaviourPunCallbacks
 {
     public GameObject readyButton;
+    public GameObject scriptScroll;
+
+    public void Start()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            scriptScroll.SetActive(true);
+        }
+    }
 
     public void ReadyButton()
     {
