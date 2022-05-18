@@ -25,10 +25,10 @@ namespace FrostweepGames.Plugins.Native
 		static CustomMicrophone()
 		{
 #if UNITY_WEBGL && !UNITY_EDITOR && FG_MPRO
-			FrostweepGames.MicrophonePro.Microphone.RecordStartedEvent += RecordStartedEventHandler;
-			FrostweepGames.MicrophonePro.Microphone.RecordEndedEvent += RecordEndedEventHandler;
-			FrostweepGames.MicrophonePro.Microphone.RecordStreamDataEvent += RecordStreamDataEventHandler;
-			FrostweepGames.MicrophonePro.Microphone.PermissionStateChangedEvent += PermissionStateChangedEventHandler;
+			FrostweepGames.MicrophonePro.Microphone.RecordStartedEvent += RecordStartedEvent;
+			FrostweepGames.MicrophonePro.Microphone.RecordEndedEvent += RecordEndedEvent;
+			FrostweepGames.MicrophonePro.Microphone.RecordStreamDataEvent += RecordStreamDataEvent;
+			FrostweepGames.MicrophonePro.Microphone.PermissionStateChangedEvent += PermissionStateChangedEvent;
 #endif
 		}
 
@@ -293,27 +293,5 @@ namespace FrostweepGames.Plugins.Native
 			else
 				return false;
 		}
-
-#if UNITY_WEBGL && !UNITY_EDITOR && FG_MPRO
-		private static void RecordStartedEventHandler()
-        {
-			RecordStartedEvent?.Invoke();
-		}
-
-		private static void RecordEndedEventHandler()
-		{
-			RecordEndedEvent?.Invoke();
-		}
-
-		private static void RecordStreamDataEventHandler(float[] data)
-		{
-			RecordStreamDataEvent?.Invoke(data);
-		}
-
-		private static void PermissionStateChangedEventHandler(bool state)
-		{
-			PermissionStateChangedEvent?.Invoke(state);
-		}
-#endif
 	}
 }
