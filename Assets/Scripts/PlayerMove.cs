@@ -4,7 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using UnityEngine.UI;
 
-public class PlayerMoveScript : MonoBehaviourPun
+public class PlayerMove : MonoBehaviourPun
 {
     // Speed of movement
     public float moveSpeed = 3;

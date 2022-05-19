@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void ReadyButton()
     {
         readyButton.SetActive(false);
-        Instantiate(playerPrefab, canvas.transform.position, Quaternion.identity, canvas.transform);
+        //Instantiate(playerPrefab, canvas.transform.position, Quaternion.identity, canvas.transform);
         //PhotonNetwork.Instantiate("Player", new Vector3(1, 1, 0), Quaternion.identity, 0);
     }
 }
