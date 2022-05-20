@@ -6,8 +6,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     public GameObject readyButton;
     public GameObject scriptScroll;
-    public GameObject playerPrefab;
     public GameObject canvas;
+    public GameObject objects;
+    public GameObject colliders;
 
     public void Start()
     {
@@ -20,7 +21,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void ReadyButton()
     {
         readyButton.SetActive(false);
-        //Instantiate(playerPrefab, canvas.transform.position, Quaternion.identity, canvas.transform);
-        //PhotonNetwork.Instantiate("Player", new Vector3(1, 1, 0), Quaternion.identity, 0);
+        GameObject player = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        GameObject obj = PhotonNetwork.Instantiate("Object", canvas.transform.position + new Vector3(10, 10, 10), Quaternion.identity, 0);
+        GameObject wall = PhotonNetwork.Instantiate("Wall", canvas.transform.position - new Vector3(10, 10, 10), Quaternion.identity, 0);
+        player.transform.parent = canvas.transform;
+        obj.transform.parent = objects.transform;
+        wall.transform.parent = colliders.transform;
     }
 }
