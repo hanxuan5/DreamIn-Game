@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
-public class playerScript : MonoBehaviour
+public class playerScript : MonoBehaviourPun
 {
     Rigidbody2D body;
 
@@ -20,6 +21,10 @@ public class playerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!photonView.IsMine && PhotonNetwork.IsConnected)
+        {
+            return;
+        }
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -27,10 +32,5 @@ public class playerScript : MonoBehaviour
         dir *= runSpeed;
 
         body.velocity = dir;
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        Debug.Log("Something");
     }
 }

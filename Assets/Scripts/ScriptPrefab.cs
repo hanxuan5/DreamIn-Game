@@ -6,6 +6,6 @@ public class ScriptPrefab : MonoBehaviour
 {
     public void ScriptButton()
     {
-
+        //TODO: Get data and update map
     }
 }
