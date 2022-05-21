@@ -13,6 +13,8 @@ GameObject:
   - component: {fileID: 7252566956838180491}
   - component: {fileID: 3572219004395243361}
   - component: {fileID: -6174735361051210527}
+  - component: {fileID: 3901044749317588194}
+  - component: {fileID: -622022866944310864}
   m_Layer: 5
   m_Name: Wall
   m_TagString: Untagged
@@ -122,7 +124,35 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 0
   ObservedComponents:
-  - {fileID: 3521498566904812295, guid: 25c5e8bd57c23fd4584b9abfef565d50, type: 3}
+  - {fileID: 3901044749317588194}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &3901044749317588194
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3572219004395243366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 1
+  m_SynchronizeScale: 0
+  m_UseLocal: 1
+--- !u!114 &-622022866944310864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3572219004395243366}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 377a40c2e33dab04e9d0df66753812ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

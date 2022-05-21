@@ -183,6 +183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5bed1f4ae249f6489ea408c21e069b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  voiceImage: {fileID: 0}
   isRecording: 0
 --- !u!1 &8206492336743968045
 GameObject:

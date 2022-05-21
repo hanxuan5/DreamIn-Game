@@ -7,7 +7,7 @@ using UnityEngine;
 
 public class PlayerVoice: MonoBehaviour
 {
-    private Image voiceImage;
+    public Image voiceImage;
     private PhotonView photonView;
     private Recorder recorder;
     private Listener listener;
@@ -19,18 +19,17 @@ public class PlayerVoice: MonoBehaviour
         photonView = GetComponent<PhotonView>();
         recorder = GetComponent<Recorder>();
         listener = GetComponent<Listener>();
-        voiceImage = GetComponentInChildren<Image>();
         voiceImage.enabled = false;
     }
     private void Update()
     {
         if (!photonView.IsMine) return;
-        if (Input.GetKeyDown(KeyCode.R) && !isRecording)
+        if (Input.GetKeyDown(KeyCode.T) && !isRecording)
         {
             StartRecord();
             isRecording = true;
         }
-        else if (Input.GetKeyUp(KeyCode.R) && isRecording)
+        else if (Input.GetKeyUp(KeyCode.T) && isRecording)
         {
             StopRecord();
             isRecording = false;
