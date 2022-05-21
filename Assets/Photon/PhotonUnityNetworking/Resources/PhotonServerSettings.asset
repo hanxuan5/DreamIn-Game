@@ -40,6 +40,10 @@ MonoBehaviour:
   - Fire
   - RespawnSpaceship
   - RPCSetVoiceImage
+  - RPCSetPlayerName
+  - RPCAddToCanvas
+  - RPCSetInfoPanel
+  - RPCSetInfoText
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

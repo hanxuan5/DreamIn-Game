@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+
 using Photon.Pun;
+using UnityEngine.UI;
+using UnityEngine;
 
 public class playerScript : MonoBehaviourPun
 {
+    public Text nameText;
     Rigidbody2D body;
 
     public float runSpeed = 20.0f;
@@ -12,11 +15,6 @@ public class playerScript : MonoBehaviourPun
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-    }
-
-    void Update()
-    {
-        
     }
 
     private void FixedUpdate()
@@ -32,5 +30,17 @@ public class playerScript : MonoBehaviourPun
         dir *= runSpeed;
 
         body.velocity = dir;
+    }
+
+    public void SetPlayerName(string name)
+    {
+        photonView.RPC("RPCSetPlayerName", RpcTarget.All, name);
+    }
+    
+
+    [PunRPC]
+    void RPCSetPlayerName(string name)
+    {
+        nameText.text = name;
     }
 }
