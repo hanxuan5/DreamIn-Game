@@ -26,10 +26,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         player.GetComponent<playerScript>().SetPlayerName("Set a new name");
 
         GameObject obj = PhotonNetwork.Instantiate("Object", canvas.transform.position + new Vector3(100, 100, 100), Quaternion.identity, 0);
-        obj.GetComponent<Object>().SetInfoText("new info");
-
         GameObject wall = PhotonNetwork.Instantiate("Wall", canvas.transform.position - new Vector3(100, 100, 100), Quaternion.identity, 0);
     }
-
-
 }

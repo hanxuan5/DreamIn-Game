@@ -35,14 +35,15 @@ namespace Demo
 
         public void ProvideData(Transform transform, int idx)
         {
-            //TODO: Change The Name of Each cell
+            //TODO: Change The Name and GameID of Each cell
             transform.GetChild(0).gameObject.GetComponent<Text>().text = "1";
+            transform.gameObject.GetComponent<ScrollIndexCallback1>().gameID = "1";
             transform.SendMessage("ScrollCellIndex", idx);
         }
 
         void Start()
         {
-            //TODO: Get Script Info from backend
+            //TODO: Get The Name and GameID from backend
             var ls = GetComponent<LoopScrollRect>();
             ls.prefabSource = this;
             ls.dataSource = this;

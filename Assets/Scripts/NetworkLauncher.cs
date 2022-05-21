@@ -4,6 +4,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement;
 
 public class NetworkLauncher : MonoBehaviourPunCallbacks
@@ -11,6 +12,7 @@ public class NetworkLauncher : MonoBehaviourPunCallbacks
     public GameObject LoginUI;
     public GameObject RoomUI;
     public InputField roomName;
+    public GameObject region;
 
     public override void OnConnectedToMaster()
     {
@@ -19,6 +21,7 @@ public class NetworkLauncher : MonoBehaviourPunCallbacks
 
     public void PlayButton()
     {
+        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = region.GetComponent<TMP_Text>().text;
         PhotonNetwork.ConnectUsingSettings();
         LoginUI.SetActive(false);
     }

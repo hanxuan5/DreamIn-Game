@@ -3,40 +3,35 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
 
 
 public class Object : MonoBehaviour
 {
-    public Text infoText;
+    public GameObject message;
     PhotonView photonView;
     void Start()
     {
         photonView = GetComponent<PhotonView>();
-        HideInfoText();
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
         {
-            ShowInfoText();
+            message.SetActive(true);
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))
         {
-            HideInfoText();
+            message.SetActive(false);
         }
     }
 
-    public void ShowInfoText()
+    public void HideButton()
     {
-        infoText.gameObject.SetActive(true);
-    }
-
-    public void HideInfoText()
-    {
-        infoText.gameObject.SetActive(false);
+        message.SetActive(false);
     }
 
     public void SetInfoText(string info)
@@ -50,6 +45,6 @@ public class Object : MonoBehaviour
     [PunRPC]
     void RPCSetInfoText(string info)
     {
-        infoText.text = info;
+        message.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = info;
     }
 }

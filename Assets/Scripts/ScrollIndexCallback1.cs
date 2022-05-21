@@ -6,6 +6,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
 {
     public Image image;
 	public Text text;
+    public string gameID;
 
     void ScrollCellIndex (int idx) 
     {
@@ -66,5 +67,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
     public void ScriptButton()
     {
         this.transform.parent.parent.gameObject.SetActive(false);
+        //TODO: Get data from backend with gameID
+        //TODO: Update scene
     }
 }
