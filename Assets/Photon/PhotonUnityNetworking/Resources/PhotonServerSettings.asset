@@ -19,7 +19,7 @@ MonoBehaviour:
     AppIdVoice: 
     AppVersion: 
     UseNameServer: 1
-    FixedRegion: jp
+    FixedRegion: us
     Server: 
     Port: 0
     ProxyServer: 
@@ -44,6 +44,9 @@ MonoBehaviour:
   - RPCAddToCanvas
   - RPCSetInfoPanel
   - RPCSetInfoText
+  - SetTimerText
+  - RPCSetTimerText
+  - RPCShowVotePanel
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

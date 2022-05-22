@@ -8,6 +8,7 @@ using UnityEngine;
 public class playerScript : MonoBehaviourPun
 {
     public Text nameText;
+    internal string playerName;
     Rigidbody2D body;
 
     public float runSpeed = 20.0f;
@@ -15,6 +16,8 @@ public class playerScript : MonoBehaviourPun
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
+        playerName = "Default Player Name";
+        SetPlayerName(playerName);
     }
 
     private void FixedUpdate()
