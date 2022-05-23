@@ -1,6 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.Networking;
+using System.IO;
+using System.Text.RegularExpressions;
+using LitJson;
 
 public class ScrollIndexCallback1 : MonoBehaviour 
 {
@@ -66,8 +70,40 @@ public class ScrollIndexCallback1 : MonoBehaviour
 
     public void ScriptButton()
     {
-        this.transform.parent.parent.gameObject.SetActive(false);
+        //this.transform.parent.parent.gameObject.SetActive(false);
         //TODO: Get data from backend with gameID
+
+        StartCoroutine(GetGameData(gameID));
         //TODO: Update scene
+    }
+    IEnumerator GetGameData(string ID)
+    {
+        string url = "http://52.71.182.98/q_game/?id=";
+        url += ID;
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+        {
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result==UnityWebRequest.Result.ProtocolError|| webRequest.result==UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.LogError(webRequest.error + "\n" + webRequest.downloadHandler.text);
+            }
+            else
+            {
+                Debug.Log(webRequest.downloadHandler.text);
+                //保存本地
+                string savePath = "Assets/Scripts/TempData.json";
+                File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
+                //读取
+                StreamReader streamReader = new StreamReader(savePath);
+                string str = streamReader.ReadToEnd();
+                streamReader.Close();
+
+                GameJsonData gj = JsonMapper.ToObject<GameJsonData>(str);
+
+                
+
+            }
+        }
     }
 }
