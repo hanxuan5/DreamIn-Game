@@ -90,7 +90,6 @@ public class ScrollIndexCallback1 : MonoBehaviour
             }
             else
             {
-                Debug.Log(webRequest.downloadHandler.text);
                 //保存本地
                 string savePath = "Assets/Scripts/TempData.json";
                 File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
@@ -100,9 +99,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
                 streamReader.Close();
 
                 GameJsonData gj = JsonMapper.ToObject<GameJsonData>(str);
-
                 gj.result.info.Map[0].Map_Object[0].SwitchToVectorPosition();//例子
-
             }
         }
     }
