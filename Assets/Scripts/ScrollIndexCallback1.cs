@@ -72,7 +72,6 @@ public class ScrollIndexCallback1 : MonoBehaviour
     {
         //this.transform.parent.parent.gameObject.SetActive(false);
         //TODO: Get data from backend with gameID
-
         StartCoroutine(GetGameData(gameID));
         //TODO: Update scene
     }
@@ -80,6 +79,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
     {
         string url = "http://52.71.182.98/q_game/?id=";
         url += ID;
+        
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
@@ -102,5 +102,6 @@ public class ScrollIndexCallback1 : MonoBehaviour
                 gj.result.info.Map[0].Map_Object[0].SwitchToVectorPosition();//例子
             }
         }
+        
     }
 }
