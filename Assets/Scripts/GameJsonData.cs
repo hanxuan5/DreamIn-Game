@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public class GameJsonData
@@ -41,12 +43,15 @@ public class PlacedObject
     public string message;
     public string position;
 
-    public Transform transform;
+    public Vector3 vecPos;
 
-    public void GetTransformPosition()
+    public void SwitchToVectorPosition()
     {
         if (position == null) return;
-        string pos = position.Substring(1, position.Length - 2);
-            
+        string str = position.Substring(0, position.Length );
+
+        string[] pos = str.Split(new char[2] { 'f', ',' });
+
+        vecPos = new Vector3(Convert.ToSingle(pos[0]), Convert.ToSingle(pos[2]), Convert.ToSingle(pos[4]));
     }
 }

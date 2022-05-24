@@ -101,7 +101,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
 
                 GameJsonData gj = JsonMapper.ToObject<GameJsonData>(str);
 
-                
+                gj.result.info.Map[0].Map_Object[0].SwitchToVectorPosition();//例子
 
             }
         }
