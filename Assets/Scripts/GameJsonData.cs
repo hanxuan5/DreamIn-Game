@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 
-public class GameJsonData
+public class GameData
 {
     public string status;
     public ReceiveResult result;
@@ -11,23 +11,25 @@ public class GameJsonData
 public class ReceiveResult
 {
     public int id;
-    public GameData info;
+    public GameInfo info;
 }
 
-public class GameData
+public class GameInfo
 {
     public string name;
     public string end;
     public int length;
-    public List<Character> character; //最多11个
+    public List<GameCharacter> character; //最多11个
     public List<GameMap> Map;
 }
 
-public class Character
+public class GameCharacter
 {
     public string name;
     public int identity;
     public string background;
+
+    public Texture2D characterTexture;//人物贴图
 }
 
 public class GameMap
@@ -35,6 +37,8 @@ public class GameMap
     public string background;
     public string collide_map;
     public List<PlacedObject> Map_Object; //平均在150个，但大部分object的message为空字符串
+
+    public Texture2D mapTexture;//地图贴图
 }
 
 public class PlacedObject
@@ -43,15 +47,18 @@ public class PlacedObject
     public string message;
     public string position;
 
-    public Vector3 vecPos;
+    public Texture2D objTexture;//物体贴图
 
-    public void SwitchToVectorPosition()
+    public Vector3 GetPosition()
     {
-        if (position == null) return;
-        string str = position.Substring(0, position.Length );
+        if (position == null)
+        {
+            Debug.LogError("该物体没有位置信息!");
+            return new Vector3(0, 0, 0);
+        }
+        string str = position.Substring(0, position.Length);
 
         string[] pos = str.Split(new char[2] { 'f', ',' });
-
-        vecPos = new Vector3(Convert.ToSingle(pos[0]), Convert.ToSingle(pos[2]), Convert.ToSingle(pos[4]));
+        return new Vector3(Convert.ToSingle(pos[0]), Convert.ToSingle(pos[2]), Convert.ToSingle(pos[4]));
     }
 }

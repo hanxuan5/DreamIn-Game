@@ -12,6 +12,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
 	public Text text;
     public string gameID;
 
+    private GameData gameData;
     void ScrollCellIndex (int idx) 
     {
         if (image != null)
@@ -73,6 +74,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
         //this.transform.parent.parent.gameObject.SetActive(false);
         //TODO: Get data from backend with gameID
         StartCoroutine(GetGameData(gameID));
+
         //TODO: Update scene
     }
     IEnumerator GetGameData(string ID)
@@ -98,10 +100,99 @@ public class ScrollIndexCallback1 : MonoBehaviour
                 string str = streamReader.ReadToEnd();
                 streamReader.Close();
 
-                GameJsonData gj = JsonMapper.ToObject<GameJsonData>(str);
-                gj.result.info.Map[0].Map_Object[0].SwitchToVectorPosition();//例子
+                
+                gameData = JsonMapper.ToObject<GameData>(str);
+                for(int i=0;i< gameData.result.info.Map.Count;i++)
+                {
+                    string addr = "Maps/InDoor/" + gameData.result.info.Map[i].background;
+                    StartCoroutine(GetMapTexture(addr,i));//background???这名字需要修改
+
+
+                    //for(int j=0;j< gameData.result.info.Map[i].Map_Object.Count;j++)
+                    //{
+                    //    string objAddr = "" + gameData.result.info.Map[i].Map_Object[j].image_link;
+                    //    StartCoroutine(GetObjectTexture(addr,i,j));
+                    //}
+                }
+
+                StartCoroutine(WaitForDownloadCompelete());
             }
         }
         
+    }
+    /// <summary>
+    /// 获取地图贴图
+    /// </summary>
+    /// <param name="addr"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    IEnumerator GetMapTexture(string addr, int i)
+    {
+        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
+        imageLink += addr+".png";
+        imageLink=imageLink.Replace(" ", "%20");
+
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error+"imageLink: "+imageLink);
+        }
+        else
+        {
+            gameData.result.info.Map[i].mapTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+        }
+    }
+
+    /// <summary>
+    /// 获取object的贴图
+    /// </summary>
+    /// <param name="addr"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    IEnumerator GetObjectTexture(string addr, int i,int j)
+    {
+        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
+        imageLink += addr + ".png";
+        imageLink = imageLink.Replace(" ", "%20");
+
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error + "imageLink: " + imageLink);
+        }
+        else
+        {
+            gameData.result.info.Map[i].Map_Object[j].objTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+        }
+    }
+    /// <summary>
+    /// 等待所有图片下载完成
+    /// </summary>
+    /// <param name="gd"></param>
+    /// <returns></returns>
+    IEnumerator WaitForDownloadCompelete()
+    {
+        while(true)
+        {
+            bool isCompelete = true;
+            foreach (GameMap gm in gameData.result.info.Map)
+            {
+                if (gm.mapTexture == null) isCompelete=false;
+                //foreach (PlacedObject po in gameData.Map_Object)
+                //{
+                //    if (po.objTexture == null) isCompelete = false;
+                //}
+            }
+            if (isCompelete == true) break;
+            yield return null;
+        }
+        //如果发现都下载完成了，将游戏数据传给gamemanager
+        GameObject.Find("GameManager").GetComponent<GameManager>().SetGameData(gameData);
+        this.transform.parent.parent.gameObject.SetActive(false);
+
     }
 }

@@ -7,7 +7,7 @@ public class RPCGameObject : MonoBehaviour
 {
     //所有需要生成在GameCanvas上的游戏物体必须挂载此类以防止比例问题
     PhotonView photonView;
-    void Start()
+    public void Awake()
     {
         photonView = GetComponent<PhotonView>();
         AddToCanvas();
