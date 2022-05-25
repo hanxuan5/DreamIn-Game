@@ -11,6 +11,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
     public Image image;
 	public Text text;
     public string gameID;
+    public int numOfPlayer;
 
     private GameData gameData;
     void ScrollCellIndex (int idx) 
@@ -191,9 +192,9 @@ public class ScrollIndexCallback1 : MonoBehaviour
             if (isCompelete == true) break;
             yield return null;
         }
-        //如果发现都下载完成了，将游戏数据传给gamemanager
+        //如果发现都下载完成了，将游戏数据传给gamemanager并执行场景更新
         GameObject.Find("GameManager").GetComponent<GameManager>().SetGameData(gameData);
+        GameObject.Find("GameManager").GetComponent<GameManager>().UpdateScene();
         this.transform.parent.parent.gameObject.SetActive(false);
-
     }
 }

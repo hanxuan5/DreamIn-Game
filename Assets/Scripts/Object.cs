@@ -16,7 +16,7 @@ public class Object : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player"))
+        if(collision.CompareTag("Player") && message.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text.Length > 0)
         {
             message.SetActive(true);
         }
@@ -35,15 +35,6 @@ public class Object : MonoBehaviour
     }
 
     public void SetInfoText(string info)
-    {
-        if(!photonView)
-            photonView = GetComponent<PhotonView>();
-
-        photonView.RPC("RPCSetInfoText", RpcTarget.All, info);
-    }
-
-    [PunRPC]
-    void RPCSetInfoText(string info)
     {
         message.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = info;
     }

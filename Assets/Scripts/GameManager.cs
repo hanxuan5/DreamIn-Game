@@ -8,10 +8,13 @@ using UnityEngine.Networking;
 public class GameManager : MonoBehaviourPunCallbacks
 { 
     public GameObject readyButton;
+    public GameObject startButton;
     public GameObject scriptScroll;
     public GameObject canvas;
     public GameObject objects;
     public GameObject colliders;
+    public GameObject objectPrefab;
+    public GameObject colliderPrefab;
     public GameObject votePanel;
     public Text TimerText;
 
@@ -20,6 +23,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     private PhotonView GM_PhotonView;
     private GameData gameData;
+    private int ColliderSize = 32;
 
     public void Start()
     {
@@ -39,31 +43,26 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void ReadyButton()
     {
-        if (gameData == null)
-        {
-            Debug.Log("还未选择剧本或数据还未下载完毕！");
-            return;
-        }
-
-        StartGame();
-        //GameObject obj = PhotonNetwork.Instantiate("Object", canvas.transform.position + new Vector3(100, 100, 100), Quaternion.identity, 0);
-        //GameObject wall = PhotonNetwork.Instantiate("Wall", canvas.transform.position - new Vector3(100, 100, 100), Quaternion.identity, 0);
-    }
-    GameObject map;
-    void StartGame()
-    {
+        GameObject player = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
         readyButton.SetActive(false);
-
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startButton.SetActive(true);
+        }
+    }
+    public void UpdateScene()
+    {
         //初始化地图
         {
-            GameObject map = PhotonNetwork.Instantiate("BasedObject", new Vector2(0, 0), Quaternion.identity, 0);
-            map.gameObject.name = "GameMap";
+            GameObject map = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
             //设置地图的位置
             float w = gameData.result.info.Map[0].mapTexture.width;
             float h = gameData.result.info.Map[0].mapTexture.height;
             map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
             map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-            map.transform.SetSiblingIndex(0);//设置地图在UI层级的最下层
+
+            //设置地图在UI层级的最下层
+            map.transform.SetSiblingIndex(0);
 
             //设置sprite
             map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
@@ -74,22 +73,48 @@ public class GameManager : MonoBehaviourPunCallbacks
             //目前map是一个数组，这是暂时方法，只获取map[0]
             for (int i = 0; i < gameData.result.info.Map[0].Map_Object.Count; i++)
             {
-                GameObject obj = PhotonNetwork.Instantiate("BasedObject", new Vector2(0, 0), Quaternion.identity, 0);
-
-                //暂时方法，名字是image_link
-                obj.gameObject.name = "obj"+i; //gameData.result.info.Map[0].Map_Object[i].image_link;
+                GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
 
                 float w = gameData.result.info.Map[0].Map_Object[i].objTexture.width;
                 float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
 
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
                 obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+                obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
                 obj.transform.position = gameData.result.info.Map[0].Map_Object[i].GetPosition();
             }
         }
 
-        StartCountTime(gameData.result.info.length);
-        //GameObject player = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        //初始化碰撞体
+        {
+            float w = gameData.result.info.Map[0].mapTexture.width / 2;
+            float h = gameData.result.info.Map[0].mapTexture.height / 2;
+            string[] rows = gameData.result.info.Map[0].collide_map.Split(';');
+            for (int i = 0; i < rows.Length; i++)
+            {
+                string[] cols = rows[i].Split(',');
+                for (int j = 0; j < cols.Length - 1; j++)
+                {
+                    GameObject obj = Instantiate(colliderPrefab, new Vector2(0, 0), Quaternion.identity, colliders.transform);
+                    obj.transform.localPosition = new Vector3(-w + int.Parse(cols[j]) * ColliderSize + ColliderSize / 2, h - i * ColliderSize - ColliderSize / 2, 0);
+                }
+            }
+        }
+
+        //TODO: 设置结尾
+    }
+
+    public void StartButton()
+    {
+        if (gameData == null)
+        {
+            Debug.Log("没选择剧本/没下载完成");
+            return;
+        }
+
+        //TODO: 分配人物
+        //TODO: 开始计时
+        startButton.SetActive(false);
     }
 
 

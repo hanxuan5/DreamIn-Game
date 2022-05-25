@@ -42,15 +42,18 @@ namespace Demo
 
         public void ProvideData(Transform transform, int idx)
         {
-            //TODO: Change The Name and GameID of Each cell
-            transform.GetChild(0).gameObject.GetComponent<Text>().text = sj.GetScriptsResult().GetScript(idx).name;
-            transform.gameObject.GetComponent<ScrollIndexCallback1>().gameID = sj.GetScriptsResult().GetScript(idx).id.ToString();
+            string[] subs = sj.GetScriptsResult().GetScript(idx).name.Split(',');
+            if (idx > 37) //Delete after
+            {
+                transform.GetChild(0).gameObject.GetComponent<Text>().text = subs[0] + "(" + subs[1] + " players)";
+                transform.gameObject.GetComponent<ScrollIndexCallback1>().gameID = sj.GetScriptsResult().GetScript(idx).id.ToString();
+                transform.gameObject.GetComponent<ScrollIndexCallback1>().numOfPlayer = int.Parse(subs[1]);
+            }
             transform.SendMessage("ScrollCellIndex", idx);
         }
 
         void Start()
         {
-            //TODO: Get The Name and GameID from backend
             StartCoroutine(GetNameAndID());
         }
 
