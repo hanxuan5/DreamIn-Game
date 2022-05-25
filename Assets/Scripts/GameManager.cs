@@ -4,6 +4,9 @@ using UnityEngine.UI;
 using UnityEngine;
 using Photon.Pun;
 using UnityEngine.Networking;
+using System.IO;
+using System.Text.RegularExpressions;
+using LitJson;
 
 public class GameManager : MonoBehaviourPunCallbacks
 { 
@@ -16,31 +19,27 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject objectPrefab;
     public GameObject colliderPrefab;
     public GameObject votePanel;
-    public Text TimerText;
+
+    public Text FinalText;//最后结果的面板
+    public Text TimerText;//显示时间
 
     [SerializeField]
-    private int countTime=0;//倒计时及时数据
+    private int countTime=0;//倒计时数据
 
     private PhotonView GM_PhotonView;
+    
     private GameData gameData;
+    private bool isDownloadCompelete=false;
+
     private int ColliderSize = 32;
 
     public void Start()
     {
         GM_PhotonView = GetComponent<PhotonView>();
-        if (PhotonNetwork.IsMasterClient)
-        {
-            scriptScroll.SetActive(true);
-        }
+
     }
-    /// <summary>
-    /// 接收游戏数据，只有接收了数据才能够开始游戏
-    /// </summary>
-    /// <param name="gd"></param>
-    public void SetGameData(GameData gd)
-    {
-        gameData = gd;
-    }
+
+#region 按钮点击事件
     public void ReadyButton()
     {
         GameObject player = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
@@ -48,13 +47,49 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             startButton.SetActive(true);
+            scriptScroll.SetActive(true);
         }
     }
+    public void StartButton()
+    {
+        if (gameData == null)
+        {
+            Debug.Log("没选择剧本");
+            return;
+        }
+        if(isDownloadCompelete==false)
+        {
+            Debug.Log("没有下载完成");
+            return;
+        }
+        startButton.SetActive(false);
+
+        //TODO: 分配人物
+        List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
+        GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
+        for(int i=0;i<playerObj.Length;i++)
+        {
+            int index = Random.Range(0, characters.Count);
+            characters.RemoveAt(index);
+            playerObj[i].GetComponent<playerScript>().SetPlayerInfo(gameData.result.info.character, index);
+        }
+        //TODO: 开始计时
+        StartCountTime(countTime);
+    }
+
+#endregion
+
     public void UpdateScene()
     {
+        //设置计时
+        countTime = gameData.result.info.length;
         //初始化地图
         {
             GameObject map = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
+
+            map.transform.SetParent(canvas.transform);
+            map.transform.localScale = new Vector3(1, 1, 1);
+
             //设置地图的位置
             float w = gameData.result.info.Map[0].mapTexture.width;
             float h = gameData.result.info.Map[0].mapTexture.height;
@@ -75,9 +110,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
 
+                obj.transform.SetParent(canvas.transform);
+                obj.transform.localScale = new Vector3(1, 1, 1);
+
                 float w = gameData.result.info.Map[0].Map_Object[i].objTexture.width;
                 float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
-
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
                 obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
                 obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
@@ -100,24 +137,158 @@ public class GameManager : MonoBehaviourPunCallbacks
                 }
             }
         }
-
         //TODO: 设置结尾
+        FinalText.text = gameData.result.info.end;
     }
 
-    public void StartButton()
+    #region 游戏数据下载
+    public void DownLoadGameData(string ID)
     {
-        if (gameData == null)
+       GM_PhotonView.RPC("RPCDownloadGameData",RpcTarget.All,ID);
+    }
+
+    [PunRPC]
+    void RPCDownloadGameData(string ID)
+    {
+        StartCoroutine(GetGameData(ID));
+    }
+    IEnumerator GetGameData(string ID)
+    {
+        string url = "http://52.71.182.98/q_game/?id=";
+        url += ID;
+
+        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
-            Debug.Log("没选择剧本/没下载完成");
-            return;
+            yield return webRequest.SendWebRequest();
+
+            if (webRequest.result == UnityWebRequest.Result.ProtocolError || webRequest.result == UnityWebRequest.Result.ConnectionError)
+            {
+                Debug.LogError(webRequest.error + "\n" + webRequest.downloadHandler.text);
+            }
+            else
+            {
+#if UNITY_EDITOR
+                //保存一份副本数据到本地
+                string savePath = "Assets/Scripts/TempData.json";
+                File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
+#endif
+
+                gameData = JsonMapper.ToObject<GameData>(webRequest.downloadHandler.text);
+
+                //检测人物数量是否足够，不够的话不能开启游戏    这里先设置为小于等于
+                int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
+                if (playerCount >= gameData.result.info.character.Count)
+                {
+                    //下载所需的贴图数据
+                    for (int i = 0; i < gameData.result.info.Map.Count; i++)
+                    {
+                        string addr = gameData.result.info.Map[i].background;
+                        StartCoroutine(GetMapTexture(addr, i));//background???这名字需要修改
+
+                        //地图中的物品贴图
+                        for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
+                        {
+                            string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
+                            StartCoroutine(GetObjectTexture(objAddr, i, j));
+                        }
+                        //TODO：人物贴图下载
+
+                    }
+                    //检测下载是否完成
+                    StartCoroutine(WaitForDownloadCompelete());
+                    scriptScroll.gameObject.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("人数不够，请重新选择剧本!\n 要求人数："+ gameData.result.info.character.Count);
+                    scriptScroll.gameObject.SetActive(true);
+                }
+            }
         }
 
-        //TODO: 分配人物
-        //TODO: 开始计时
-        startButton.SetActive(false);
+    }
+    /// <summary>
+    /// 获取地图贴图
+    /// </summary>
+    /// <param name="addr"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    IEnumerator GetMapTexture(string addr, int i)
+    {
+        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
+        imageLink += addr;
+        imageLink = imageLink.Replace(" ", "%20");
+
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error + "imageLink: " + imageLink);
+        }
+        else
+        {
+            gameData.result.info.Map[i].mapTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+        }
     }
 
+    /// <summary>
+    /// 获取object的贴图
+    /// </summary>
+    /// <param name="addr"></param>
+    /// <param name="index"></param>
+    /// <returns></returns>
+    IEnumerator GetObjectTexture(string addr, int i, int j)
+    {
+        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
+        imageLink += addr;
+        imageLink = imageLink.Replace(" ", "%20");
 
+        UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
+        yield return www.SendWebRequest();
+
+        if (www.result != UnityWebRequest.Result.Success)
+        {
+            Debug.Log(www.error + "imageLink: " + imageLink);
+        }
+        else
+        {
+            gameData.result.info.Map[i].Map_Object[j].objTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+        }
+    }
+    /// <summary>
+    /// 等待所有图片下载完成
+    /// </summary>
+    /// <param name="gd"></param>
+    /// <returns></returns>
+    IEnumerator WaitForDownloadCompelete()
+    {
+        while (true)
+        {
+            bool isCompelete = true;
+            foreach (GameMap gm in gameData.result.info.Map)
+            {
+                //检测地图贴图
+                if (gm.mapTexture == null) isCompelete = false;
+                //检测地图物品贴图
+                foreach (PlacedObject po in gm.Map_Object)
+                {
+                    if (po.objTexture == null) isCompelete = false;
+                }
+                //TODO：检测人物贴图
+
+            }
+            if (isCompelete == true) break;
+            yield return null;
+        }
+        //如果发现都下载完成了
+        Debug.Log("数据下载完毕");
+        isDownloadCompelete = true;
+        UpdateScene();
+    }
+    #endregion
+
+    #region 计时部分
     void StartCountTime(int t)
     {
         if(PhotonNetwork.IsMasterClient)
@@ -200,5 +371,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         votePanel.SetActive(true);
         votePanel.GetComponent<VotePanel>().CreatePlayerItem(GameObject.FindGameObjectsWithTag("Player"));
     }
+#endregion
 
 }

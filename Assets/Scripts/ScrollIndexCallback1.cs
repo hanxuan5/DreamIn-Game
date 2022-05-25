@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Text.RegularExpressions;
 using LitJson;
+using Photon.Pun;
 
 public class ScrollIndexCallback1 : MonoBehaviour 
 {
@@ -72,129 +73,10 @@ public class ScrollIndexCallback1 : MonoBehaviour
 
     public void ScriptButton()
     {
+        //Get data from backend with gameID
+        GameObject.Find("GameManager").GetComponent<GameManager>().DownLoadGameData(gameID);
         //this.transform.parent.parent.gameObject.SetActive(false);
-        //TODO: Get data from backend with gameID
-        StartCoroutine(GetGameData(gameID));
-
-        //TODO: Update scene
-    }
-    IEnumerator GetGameData(string ID)
-    {
-        string url = "http://52.71.182.98/q_game/?id=";
-        url += ID;
-        
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
-        {
-            yield return webRequest.SendWebRequest();
-
-            if (webRequest.result==UnityWebRequest.Result.ProtocolError|| webRequest.result==UnityWebRequest.Result.ConnectionError)
-            {
-                Debug.LogError(webRequest.error + "\n" + webRequest.downloadHandler.text);
-            }
-            else
-            {
-                //保存本地
-                string savePath = "Assets/Scripts/TempData.json";
-                File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
-                //读取
-                StreamReader streamReader = new StreamReader(savePath);
-                string str = streamReader.ReadToEnd();
-                streamReader.Close();
-
-                
-                gameData = JsonMapper.ToObject<GameData>(str);
-                for(int i=0;i< gameData.result.info.Map.Count;i++)
-                {
-                    //string addr = "Maps/InDoor/" + gameData.result.info.Map[i].background;
-                    string addr =gameData.result.info.Map[i].background;
-                    StartCoroutine(GetMapTexture(addr,i));//background???这名字需要修改
-
-
-                    for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
-                    {
-                        string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
-                        StartCoroutine(GetObjectTexture(objAddr, i, j));
-                    }
-                }
-
-                StartCoroutine(WaitForDownloadCompelete());
-            }
-        }
-        
-    }
-    /// <summary>
-    /// 获取地图贴图
-    /// </summary>
-    /// <param name="addr"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    IEnumerator GetMapTexture(string addr, int i)
-    {
-        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
-        imageLink += addr;
-        imageLink=imageLink.Replace(" ", "%20");
-
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(www.error+"imageLink: "+imageLink);
-        }
-        else
-        {
-            gameData.result.info.Map[i].mapTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-        }
     }
 
-    /// <summary>
-    /// 获取object的贴图
-    /// </summary>
-    /// <param name="addr"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    IEnumerator GetObjectTexture(string addr, int i,int j)
-    {
-        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
-        imageLink += addr;
-        imageLink = imageLink.Replace(" ", "%20");
 
-        UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
-        yield return www.SendWebRequest();
-
-        if (www.result != UnityWebRequest.Result.Success)
-        {
-            Debug.Log(www.error + "imageLink: " + imageLink);
-        }
-        else
-        {
-            gameData.result.info.Map[i].Map_Object[j].objTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-        }
-    }
-    /// <summary>
-    /// 等待所有图片下载完成
-    /// </summary>
-    /// <param name="gd"></param>
-    /// <returns></returns>
-    IEnumerator WaitForDownloadCompelete()
-    {
-        while(true)
-        {
-            bool isCompelete = true;
-            foreach (GameMap gm in gameData.result.info.Map)
-            {
-                if (gm.mapTexture == null) isCompelete=false;
-                foreach (PlacedObject po in gm.Map_Object)
-                {
-                    if (po.objTexture == null) isCompelete = false;
-                }
-            }
-            if (isCompelete == true) break;
-            yield return null;
-        }
-        //如果发现都下载完成了，将游戏数据传给gamemanager并执行场景更新
-        GameObject.Find("GameManager").GetComponent<GameManager>().SetGameData(gameData);
-        GameObject.Find("GameManager").GetComponent<GameManager>().UpdateScene();
-        this.transform.parent.parent.gameObject.SetActive(false);
-    }
 }

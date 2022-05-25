@@ -9,8 +9,11 @@ public class playerScript : MonoBehaviourPun
 {
     public Text nameText;
     internal string playerName;
-    Rigidbody2D body;
 
+    private List<GameCharacter> gameCharacters;
+    private int playerIndex;
+
+    Rigidbody2D body;
     public float runSpeed = 20.0f;
 
     void Start()
@@ -34,16 +37,29 @@ public class playerScript : MonoBehaviourPun
 
         body.velocity = dir;
     }
+    /// <summary>
+    /// 根据信息配置player
+    /// </summary>
+    /// <param name="characters"></param>
+    /// <param name="index"></param>
+    public void SetPlayerInfo(List<GameCharacter> characters, int index)
+    {
+        gameCharacters = characters;
+        playerIndex = index;
+        SetPlayerName(gameCharacters[playerIndex].name);
 
+        //TODO::设置人物贴图
+    }
     public void SetPlayerName(string name)
     {
         photonView.RPC("RPCSetPlayerName", RpcTarget.All, name);
     }
-    
-
     [PunRPC]
     void RPCSetPlayerName(string name)
     {
+        playerName = name;
         nameText.text = name;
     }
+
+
 }
