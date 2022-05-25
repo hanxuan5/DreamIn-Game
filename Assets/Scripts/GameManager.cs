@@ -72,24 +72,24 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         }
 
-        ////初始化Object
-        //{
-        //    //目前map是一个数组，这是暂时方法，只获取map[0]
-        //    for(int i=0;i<gameData.result.info.Map[0].Map_Object.Count;i++)
-        //    {
-        //        GameObject obj = PhotonNetwork.Instantiate("BasedObject", new Vector2(0, 0), Quaternion.identity, 0);
+        //初始化Object
+        {
+            //目前map是一个数组，这是暂时方法，只获取map[0]
+            for (int i = 0; i < gameData.result.info.Map[0].Map_Object.Count; i++)
+            {
+                GameObject obj = PhotonNetwork.Instantiate("BasedObject", new Vector2(0, 0), Quaternion.identity, 0);
 
-        //        //暂时方法，名字是image_link
-        //        obj.gameObject.name = gameData.result.info.Map[0].Map_Object[i].image_link;
+                //暂时方法，名字是image_link
+                obj.gameObject.name = "obj" + i; //gameData.result.info.Map[0].Map_Object[i].image_link;
 
-        //        float w = gameData.result.info.Map[0].Map_Object[i].objTexture.width;
-        //        float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
+                float w = gameData.result.info.Map[0].Map_Object[i].objTexture.width;
+                float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
 
-        //        obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
-        //        obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
-        //        obj.GetComponent<RectTransform>().anchoredPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition();
-        //    }
-        //}
+                obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
+                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+                obj.GetComponent<RectTransform>().anchoredPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition();
+            }
+        }
 
         StartCountTime(gameData.result.info.length);
         //GameObject player = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);

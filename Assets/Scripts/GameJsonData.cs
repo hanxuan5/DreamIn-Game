@@ -56,9 +56,10 @@ public class PlacedObject
             Debug.LogError("该物体没有位置信息!");
             return new Vector3(0, 0, 0);
         }
-        string str = position.Substring(0, position.Length);
+        string str = position.Substring(1, position.Length-2);
 
-        string[] pos = str.Split(new char[2] { 'f', ',' });
-        return new Vector3(Convert.ToSingle(pos[0]), Convert.ToSingle(pos[2]), Convert.ToSingle(pos[4]));
+        string[] pos = str.Split(',');
+        Vector3 ret =  new Vector3(Convert.ToSingle(pos[0]), Convert.ToSingle(pos[1]), Convert.ToSingle(pos[2]));
+        return ret;
     }
 }

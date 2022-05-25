@@ -104,15 +104,16 @@ public class ScrollIndexCallback1 : MonoBehaviour
                 gameData = JsonMapper.ToObject<GameData>(str);
                 for(int i=0;i< gameData.result.info.Map.Count;i++)
                 {
-                    string addr = "Maps/InDoor/" + gameData.result.info.Map[i].background;
+                    //string addr = "Maps/InDoor/" + gameData.result.info.Map[i].background;
+                    string addr =gameData.result.info.Map[i].background;
                     StartCoroutine(GetMapTexture(addr,i));//background???这名字需要修改
 
 
-                    //for(int j=0;j< gameData.result.info.Map[i].Map_Object.Count;j++)
-                    //{
-                    //    string objAddr = "" + gameData.result.info.Map[i].Map_Object[j].image_link;
-                    //    StartCoroutine(GetObjectTexture(addr,i,j));
-                    //}
+                    for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
+                    {
+                        string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
+                        StartCoroutine(GetObjectTexture(objAddr, i, j));
+                    }
                 }
 
                 StartCoroutine(WaitForDownloadCompelete());
@@ -129,7 +130,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
     IEnumerator GetMapTexture(string addr, int i)
     {
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
-        imageLink += addr+".png";
+        imageLink += addr;
         imageLink=imageLink.Replace(" ", "%20");
 
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
@@ -154,7 +155,7 @@ public class ScrollIndexCallback1 : MonoBehaviour
     IEnumerator GetObjectTexture(string addr, int i,int j)
     {
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
-        imageLink += addr + ".png";
+        imageLink += addr;
         imageLink = imageLink.Replace(" ", "%20");
 
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
@@ -182,10 +183,10 @@ public class ScrollIndexCallback1 : MonoBehaviour
             foreach (GameMap gm in gameData.result.info.Map)
             {
                 if (gm.mapTexture == null) isCompelete=false;
-                //foreach (PlacedObject po in gameData.Map_Object)
-                //{
-                //    if (po.objTexture == null) isCompelete = false;
-                //}
+                foreach (PlacedObject po in gm.Map_Object)
+                {
+                    if (po.objTexture == null) isCompelete = false;
+                }
             }
             if (isCompelete == true) break;
             yield return null;
