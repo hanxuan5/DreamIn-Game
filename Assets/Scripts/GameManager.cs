@@ -11,6 +11,7 @@ using LitJson;
 public class GameManager : MonoBehaviourPunCallbacks
 { 
     public GameObject readyButton;
+    public GameObject watchButton;
     public GameObject startButton;
     public GameObject scriptScroll;
     public GameObject canvas;
@@ -20,36 +21,75 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject colliderPrefab;
     public GameObject votePanel;
 
+    public Text PlayerInfoText;//玩家信息
     public Text FinalText;//最后结果的面板
     public Text TimerText;//显示时间
 
-    [SerializeField]
     private int countTime=0;//倒计时数据
-
     private PhotonView GM_PhotonView;
-    
-    private GameData gameData;
+    public GameData gameData;
+    private string gameDataID;
+    private GameObject localPlayer;
     private bool isDownloadCompelete=false;
-
     private int ColliderSize = 32;
 
     public void Start()
     {
         GM_PhotonView = GetComponent<PhotonView>();
 
+        //进入场景1s后检查是否是中途加入房间，如果是,只能观战
+        Invoke("TestIfGameStart", 1);
+    }
+
+    void TestIfGameStart()
+    {
+        GameObject testflag = GameObject.FindGameObjectWithTag("GameStartFlag");
+        if (testflag != null)
+        {
+            readyButton.SetActive(false);
+            watchButton.SetActive(true);
+            StartCoroutine(GetGameData(testflag.GetComponent<DataID>().dataId));
+        }
+        else
+        {
+            readyButton.SetActive(true);
+            watchButton.SetActive(true);
+        }
     }
 
 #region 按钮点击事件
-    public void ReadyButton()
+    public void WatchButton()
     {
-        GameObject player = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        localPlayer.GetComponent<playerScript>().SetPlayerTag("Watcher");
+        localPlayer.GetComponent<playerScript>().SetPlayerName("Watcher");
+        Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);
+
         readyButton.SetActive(false);
+        watchButton.SetActive(false);
         if (PhotonNetwork.IsMasterClient)
         {
             startButton.SetActive(true);
             scriptScroll.SetActive(true);
         }
     }
+    public void ReadyButton()
+    {
+        localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//开启相机跟随
+
+        readyButton.SetActive(false);
+        watchButton.SetActive(false);
+        if (PhotonNetwork.IsMasterClient)
+        {
+            startButton.SetActive(true);
+            scriptScroll.SetActive(true);
+        }
+    }
+    /// <summary>
+    /// 开始游戏按钮
+    /// 房主才有开始游戏按钮
+    /// </summary>
     public void StartButton()
     {
         if (gameData == null)
@@ -64,17 +104,24 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         startButton.SetActive(false);
 
-        //TODO: 分配人物
+        //分配人物
         List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
         for(int i=0;i<playerObj.Length;i++)
         {
             int index = Random.Range(0, characters.Count);
             characters.RemoveAt(index);
-            playerObj[i].GetComponent<playerScript>().SetPlayerInfo(gameData.result.info.character, index);
+            playerObj[i].GetComponent<playerScript>().SetPlayerData( index);
         }
-        //TODO: 开始计时
+
+        GM_PhotonView.RPC("RPCSetPlayerInfoPanel", RpcTarget.All);
+
+        //开始计时
         StartCountTime(countTime);
+
+        //一旦游戏开始，就会生成这个物体表示游戏已经开始，之后加入的玩家只能观战
+        GameObject flag = PhotonNetwork.Instantiate("GameStartFlag", canvas.transform.position, Quaternion.identity, 0);
+        flag.GetComponent<DataID>().SetGameDataId(gameDataID);
     }
 
 #endregion
@@ -137,14 +184,27 @@ public class GameManager : MonoBehaviourPunCallbacks
                 }
             }
         }
-        //TODO: 设置结尾
+
+        //设置人物在UI层级的最上层
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach(GameObject it in players)
+                it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
+
+            GameObject[] watchers = GameObject.FindGameObjectsWithTag("Watcher");
+            foreach(GameObject it in watchers)
+                it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
+        }
+
+        //设置结尾
         FinalText.text = gameData.result.info.end;
     }
 
     #region 游戏数据下载
     public void DownLoadGameData(string ID)
     {
-       GM_PhotonView.RPC("RPCDownloadGameData",RpcTarget.All,ID);
+        gameDataID = ID;
+        GM_PhotonView.RPC("RPCDownloadGameData",RpcTarget.All,ID);
     }
 
     [PunRPC]
@@ -368,9 +428,20 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPCShowVotePanel()
     {
+        if (localPlayer==null || localPlayer.tag == "Watcher") return;
         votePanel.SetActive(true);
         votePanel.GetComponent<VotePanel>().CreatePlayerItem(GameObject.FindGameObjectsWithTag("Player"));
     }
 #endregion
+
+    [PunRPC]
+    void RPCSetPlayerInfoPanel()
+    {
+        if(localPlayer!=null)
+        {
+            PlayerInfoText.text = localPlayer.GetComponent<playerScript>().GetPlayerInfo();
+            PlayerInfoText.transform.parent.parent.parent.parent.gameObject.SetActive(true);
+        }
+    }
 
 }
