@@ -7,6 +7,7 @@ public class GameData
 {
     public string status;
     public ReceiveResult result;
+    private GameData gameData;
 }
 public class ReceiveResult
 {

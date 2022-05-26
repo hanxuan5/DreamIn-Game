@@ -153,7 +153,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Player Name
+  m_Text: Default Name
 --- !u!1 &1751112577947840246
 GameObject:
   m_ObjectHideFlags: 0

@@ -10,8 +10,8 @@ public class playerScript : MonoBehaviourPun
     public Text nameText;
     internal string playerName;
 
-    private List<GameCharacter> gameCharacters;
     private int playerIndex;
+    private GameData gameData;
 
     Rigidbody2D body;
     public float runSpeed = 20.0f;
@@ -19,8 +19,6 @@ public class playerScript : MonoBehaviourPun
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-        playerName = "Default Player Name";
-        SetPlayerName(playerName);
     }
 
     private void FixedUpdate()
@@ -42,12 +40,17 @@ public class playerScript : MonoBehaviourPun
     /// </summary>
     /// <param name="characters"></param>
     /// <param name="index"></param>
-    public void SetPlayerInfo(List<GameCharacter> characters, int index)
+    public void SetPlayerData( int index)
     {
-        gameCharacters = characters;
-        playerIndex = index;
-        SetPlayerName(gameCharacters[playerIndex].name);
+        photonView.RPC("RPCSetPlayerData", RpcTarget.All,  index);
+    }
+    [PunRPC]
+    public void RPCSetPlayerData(int index)
+    {
+        gameData = GameObject.Find("GameManager").GetComponent<GameManager>().gameData;
 
+        playerIndex = index;
+        SetPlayerName(gameData.result.info.character[playerIndex].name);
         //TODO::…Ë÷√»ÀŒÔÃ˘Õº
     }
     public void SetPlayerName(string name)
@@ -61,5 +64,19 @@ public class playerScript : MonoBehaviourPun
         nameText.text = name;
     }
 
+    public void SetPlayerTag(string tag)
+    {
+        photonView.RPC("RPCSetPlayerTag", RpcTarget.All, tag);
+    }
 
+    [PunRPC]
+    void RPCSetPlayerTag(string tag)
+    {
+        gameObject.tag = tag;
+    }
+
+    public string GetPlayerInfo()
+    {
+        return gameData.result.info.character[playerIndex].background;
+    }
 }
