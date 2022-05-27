@@ -79,6 +79,10 @@ namespace Demo
                 }
                 else
                 {
+                    //保存一份副本数据到本地
+                    string savePath = "Assets/Scripts/ScriptData.json";
+                    File.WriteAllText(savePath, webRequest.downloadHandler.text);
+
                     sj = JsonMapper.ToObject<ScriptsJsonData>(webRequest.downloadHandler.text);
                     totalCount = sj.GetScriptsResult().GetNum();
                     CreateCells();
