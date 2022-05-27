@@ -9,34 +9,23 @@ using UnityEngine.SceneManagement;
 
 public class NetworkLauncher : MonoBehaviourPunCallbacks
 {
-    public GameObject LoginUI;
-    public GameObject RoomUI;
-    public InputField roomName;
+    public GameObject roomName;
     public GameObject region;
-
-    public override void OnConnectedToMaster()
-    {
-        RoomUI.SetActive(true);
-    }
 
     public void PlayButton()
     {
-        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = region.GetComponent<TMP_Text>().text;
-        PhotonNetwork.ConnectUsingSettings();
-        LoginUI.SetActive(false);
-    }
-
-    public void JoinOrCreateButton()
-    {
-        if (roomName.text.Length < 2)
+        if (roomName.GetComponent<TMP_Text>().text.Length < 2)
         {
             return;
         }
+        PhotonNetwork.PhotonServerSettings.AppSettings.FixedRegion = region.GetComponent<TMP_Text>().text;
+        PhotonNetwork.ConnectUsingSettings();
+    }
 
-        RoomUI.SetActive(false);
-
+    public override void OnConnectedToMaster()
+    {
         RoomOptions options = new RoomOptions { MaxPlayers = 10 };
-        PhotonNetwork.JoinOrCreateRoom(roomName.text, options, default);
+        PhotonNetwork.JoinOrCreateRoom(roomName.GetComponent<TMP_Text>().text, options, default);
     }
 
     public override void OnJoinedRoom()

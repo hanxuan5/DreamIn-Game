@@ -7,6 +7,7 @@ using UnityEngine.Networking;
 using System.IO;
 using System.Text.RegularExpressions;
 using LitJson;
+using TMPro;
 
 public class GameManager : MonoBehaviourPunCallbacks
 { 
@@ -20,10 +21,11 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject objectPrefab;
     public GameObject colliderPrefab;
     public GameObject votePanel;
+    public GameObject timer;
 
     public Text PlayerInfoText;//玩家信息
     public Text FinalText;//最后结果的面板
-    public Text TimerText;//显示时间
+    public GameObject TimerText;//显示时间
 
     private int countTime=0;//倒计时数据
     private PhotonView GM_PhotonView;
@@ -61,6 +63,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void WatchButton()
     {
         localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        localPlayer.transform.localPosition = new Vector2(100, 30);
         localPlayer.GetComponent<playerScript>().SetPlayerTag("Watcher");
         localPlayer.GetComponent<playerScript>().SetPlayerName("Watcher");
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);
@@ -76,7 +79,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void ReadyButton()
     {
         localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        localPlayer.transform.localPosition = new Vector2(100, 30);
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//开启相机跟随
+        
 
         readyButton.SetActive(false);
         watchButton.SetActive(false);
@@ -103,6 +108,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             return;
         }
         startButton.SetActive(false);
+        timer.SetActive(true);
 
         //分配人物
         List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
@@ -165,7 +171,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
                 obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
                 obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
-                obj.transform.position = gameData.result.info.Map[0].Map_Object[i].GetPosition();
+                obj.transform.localPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition() - canvas.transform.position;
             }
         }
 
@@ -396,7 +402,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else
                     s = "" + hour + ":0" + min + ":0" + sec;
             }
-            TimerText.text = s;
+            TimerText.GetComponent<TMP_Text>().text = s;
         }
         else if(t>60)
         {
@@ -417,11 +423,11 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else
                     s = "0" + min + ":0" + sec;
             }
-            TimerText.text = s;
+            TimerText.GetComponent<TMP_Text>().text = s;
         }
         else
         {
-            TimerText.text = "" + t;
+            TimerText.GetComponent<TMP_Text>().text = "" + t;
         }
     }
 
