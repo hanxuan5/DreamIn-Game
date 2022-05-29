@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using Photon.Pun;
 using UnityEngine.UI;
 using UnityEngine;
+using TMPro;
 
 public class playerScript : MonoBehaviourPun
 {
-    public Text nameText;
+    public TMP_Text nameText;
     internal string playerName;
 
     private int playerIndex;

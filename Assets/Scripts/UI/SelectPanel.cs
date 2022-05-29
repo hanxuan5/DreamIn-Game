@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 using LitJson;
+using TMPro;
 
 public class SelectPanel : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class SelectPanel : MonoBehaviour
             int i = 0;
             item.SetActive(true); //第一个item实例已经放在列表第一个位置，直接激活
             itemList.Add(item);
-            itemList[i].GetComponentInChildren<Text>().text = scripts[i].name;
+            itemList[i].GetComponentInChildren<TMP_Text>().text = scripts[i].name;
             itemList[i].GetComponent<ScrollIndexCallback1>().gameID = scripts[i].id.ToString();
             i++;
 
@@ -40,7 +41,7 @@ public class SelectPanel : MonoBehaviour
                  new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-20, t.localPosition.z);
 
 
-                a.GetComponentInChildren<Text>().text = scripts[i].name;
+                a.GetComponentInChildren<TMP_Text>().text = scripts[i].name;
                 a.GetComponent<ScrollIndexCallback1>().gameID = scripts[i].id.ToString();
                 i++;
             }
