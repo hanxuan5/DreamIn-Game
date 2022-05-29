@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject colliderPrefab;
     public GameObject votePanel;
     public GameObject timer;
+    public GameObject initialScene;
 
     public Text PlayerInfoText;//玩家信息
     public Text FinalText;//最后结果的面板
@@ -134,6 +135,13 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void UpdateScene()
     {
+        //删除初始场景
+        Destroy(initialScene);
+        foreach (Transform child in colliders.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
         //设置计时
         countTime = gameData.result.info.length;
         //初始化地图
