@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
+using TMPro;
 
 public class VotePanel : MonoBehaviour
 {
@@ -18,7 +19,7 @@ public class VotePanel : MonoBehaviour
             int i = 0;
             item.SetActive(true); //第一个item实例已经放在列表第一个位置，直接激活
             itemList.Add(item);
-            itemList[i].GetComponentInChildren<Text>().text = players[i].GetComponent<playerScript>().playerName;
+            itemList[i].GetComponentInChildren<TMP_Text>().text = players[i].GetComponent<playerScript>().playerName;
             i++;
 
             while (i < players.Length)
@@ -32,7 +33,7 @@ public class VotePanel : MonoBehaviour
                  new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-20, t.localPosition.z);
                 a.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
-                a.GetComponentInChildren<Text>().text = players[i].GetComponent<playerScript>().playerName;
+                a.GetComponentInChildren<TMP_Text>().text = players[i].GetComponent<playerScript>().playerName;
                 i++;
             }
             //根据当前 item 个数更新 Content 高度 

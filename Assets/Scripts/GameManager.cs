@@ -24,8 +24,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject timer;
     public GameObject initialScene;
 
-    public Text PlayerInfoText;//玩家信息
-    public Text FinalText;//最后结果的面板
+    public TMP_Text PlayerInfoText;//玩家信息
+    public TMP_Text FinalText;//最后结果的面板
     public GameObject TimerText;//显示时间
 
     private int countTime=0;//倒计时数据
