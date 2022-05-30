@@ -24,7 +24,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject timer;
     public GameObject initialScene;
 
-    public TMP_Text PlayerInfoText;//玩家信息
+    public TMP_Text PlayerInfoText;
+    public TMP_Text PlayerNameText;
+    public TMP_Text PlayerIdentityText;
     public TMP_Text FinalText;//最后结果的面板
     public GameObject TimerText;//显示时间
 
@@ -302,7 +304,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            gameData.result.info.Map[i].mapTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            Texture2D t= ((DownloadHandlerTexture)www.downloadHandler).texture;
+            t.filterMode = FilterMode.Point;
+            gameData.result.info.Map[i].mapTexture = t;
         }
     }
 
@@ -327,7 +331,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            gameData.result.info.Map[i].Map_Object[j].objTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            Texture2D t = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            t.filterMode = FilterMode.Point;
+            gameData.result.info.Map[i].Map_Object[j].objTexture = t;
         }
     }
     /// <summary>
@@ -453,6 +459,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(localPlayer!=null)
         {
+            PlayerNameText.text = localPlayer.GetComponent<playerScript>().GetPlayerName();
+            PlayerIdentityText.text = localPlayer.GetComponent<playerScript>().GetPlayerIdentity();
             PlayerInfoText.text = localPlayer.GetComponent<playerScript>().GetPlayerInfo();
             PlayerInfoText.transform.parent.parent.parent.parent.gameObject.SetActive(true);
         }
