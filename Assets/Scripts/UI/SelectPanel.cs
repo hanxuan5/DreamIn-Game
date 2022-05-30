@@ -25,7 +25,20 @@ public class SelectPanel : MonoBehaviour
             int i = 0;
             item.SetActive(true); //第一个item实例已经放在列表第一个位置，直接激活
             itemList.Add(item);
-            itemList[i].GetComponentInChildren<TMP_Text>().text = scripts[i].name;
+
+            string[] scriptText = scripts[i].name.Split(',');
+
+            if (scriptText.Length>1)
+            {
+                itemList[i].transform.GetChild(0).GetComponent<TMP_Text>().text = scriptText[0];
+                if(scriptText[1]=="1")
+                    itemList[i].transform.GetChild(1).GetComponent<TMP_Text>().text = scriptText[1]+ " Player";
+                else
+                    itemList[i].transform.GetChild(1).GetComponent<TMP_Text>().text = scriptText[1] + " Players";
+            }
+            else
+                itemList[i].transform.GetChild(0).GetComponent<TMP_Text>().text = scriptText[0];
+
             itemList[i].GetComponent<ScrollIndexCallback1>().gameID = scripts[i].id.ToString();
             i++;
 
@@ -41,7 +54,18 @@ public class SelectPanel : MonoBehaviour
                  new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-20, t.localPosition.z);
 
 
-                a.GetComponentInChildren<TMP_Text>().text = scripts[i].name;
+                string[] text = scripts[i].name.Split(',');
+                if (text.Length > 1)
+                {
+                    a.transform.GetChild(0).GetComponent<TMP_Text>().text = text[0];
+                    if (text[1] == "1")
+                        a.transform.GetChild(1).GetComponent<TMP_Text>().text = text[1] + " Player";
+                    else
+                        a.transform.GetChild(1).GetComponent<TMP_Text>().text = text[1] + " Players";
+                }
+                else
+                    a.transform.GetChild(0).GetComponent<TMP_Text>().text = text[0];
+
                 a.GetComponent<ScrollIndexCallback1>().gameID = scripts[i].id.ToString();
                 i++;
             }
@@ -69,6 +93,7 @@ public class SelectPanel : MonoBehaviour
             else
             {
                 sj = JsonMapper.ToObject<ScriptsJsonData>(webRequest.downloadHandler.text);
+
                 CreateScriptItem(sj.result.Info);
             }
         }
