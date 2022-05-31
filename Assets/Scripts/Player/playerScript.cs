@@ -11,11 +11,12 @@ public class playerScript : MonoBehaviourPun
     public TMP_Text nameText;
     internal string playerName;
 
-    private int playerIndex;
-    private int playerIdentity;
+    //public int voteNum=0;//玩家得票数
+    private int playerIndex;//玩家在character数组中的编号
+    private int playerIdentity;//玩家的身份
     private GameData gameData;
 
-    Rigidbody2D body;
+    private Rigidbody2D body;
     public float runSpeed = 20.0f;
 
     void Start()
@@ -104,4 +105,25 @@ public class playerScript : MonoBehaviourPun
     {
         return gameData.result.info.character[playerIndex].background;
     }
+
+    ///// <summary>
+    ///// 同步方法，同步投票数信息
+    ///// </summary>
+    ///// <param name="stream"></param>
+    ///// <param name="info"></param>
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (stream.IsWriting == true)
+    //    {
+    //        stream.SendNext(voteNum);
+    //    }
+    //    else
+    //    {
+    //        voteNum = (int)stream.ReceiveNext();
+    //    }
+    //}
+    //public void AddVoteNum()
+    //{
+    //    voteNum++;
+    //}
 }

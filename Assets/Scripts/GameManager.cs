@@ -85,7 +85,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//开启相机跟随
-        
+
+        GameObject t = PhotonNetwork.Instantiate("PlayerNameText", localPlayer.transform.position + new Vector3(0, 25, 0), Quaternion.identity, 0);
+        t.GetComponent<TextFollow>().SetTarget(localPlayer);
+        localPlayer.GetComponent<playerScript>().nameText = t.GetComponent<TMP_Text>();
 
         readyButton.SetActive(false);
         watchButton.SetActive(false);
@@ -140,7 +143,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void EndButton()
     {
-
+        EndCountTime();
     }
 
 #endregion
@@ -380,20 +383,23 @@ public class GameManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 计时部分
+    private IEnumerator IECountTime;
     void StartCountTime(int t)
     {
         if(PhotonNetwork.IsMasterClient)
         {
             //t是分钟
             countTime = t * 60;
-            StartCoroutine(CountTime());
+            IECountTime = CountTime();
+            StartCoroutine(IECountTime);
         }
     }
 
     void EndCountTime()
     {
-        StopCoroutine(CountTime());
-        GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, 0);
+        StopCoroutine(IECountTime);
+        countTime = 0;
+        GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, countTime);
         GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
     }
 
