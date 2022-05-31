@@ -85,7 +85,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//¿ªÆôÏà»ú¸úËæ
-        
+
+        GameObject t = PhotonNetwork.Instantiate("PlayerNameText", localPlayer.transform.position + new Vector3(0, 25, 0), Quaternion.identity, 0);
+        t.GetComponent<TextFollow>().SetTarget(localPlayer);
+        localPlayer.GetComponent<playerScript>().nameText = t.GetComponent<TMP_Text>();
 
         readyButton.SetActive(false);
         watchButton.SetActive(false);

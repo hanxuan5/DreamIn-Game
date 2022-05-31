@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
 
 public class TextFollow : MonoBehaviour
 {
     public Transform target;
+
+    public PhotonView photonView;
 
     // 需要锁定的坐标（可以实时生效）
     public bool freazeX, freazeY;
@@ -25,7 +28,6 @@ public class TextFollow : MonoBehaviour
     void Start()
     {
         startPosition = transform.position;
-        offset = transform.position - target.transform.position;
     }
 
     void LateUpdate()
@@ -46,7 +48,18 @@ public class TextFollow : MonoBehaviour
         }
     }
 
-
+    public void SetTarget(GameObject go)
+    {
+        target = go.transform;
+        offset = transform.position - target.transform.position;
+        //photonView.RPC("RPCSetTarget", RpcTarget.All, go);
+    }
+    [PunRPC]
+    public void RPCSetTarget(GameObject go)
+    {
+        target = go.transform;
+        offset = transform.position - target.transform.position;
+    }
 
     /// <summary>
     /// 用于重新开始游戏时直接重置相机位置
