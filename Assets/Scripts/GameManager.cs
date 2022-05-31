@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void WatchButton()
     {
         localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
-        localPlayer.transform.localPosition = new Vector2(100, 30);
+        localPlayer.transform.localPosition = new Vector2(0, 0);
         localPlayer.GetComponent<playerScript>().SetPlayerTag("Watcher");
         localPlayer.GetComponent<playerScript>().SetPlayerName("Watcher");
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);
@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void ReadyButton()
     {
         localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
-        localPlayer.transform.localPosition = new Vector2(100, 30);
+        localPlayer.transform.localPosition = new Vector2(0, 0);
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//¿ªÆôÏà»ú¸úËæ
         
 
