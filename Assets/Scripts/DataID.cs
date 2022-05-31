@@ -22,12 +22,6 @@ public class DataID : MonoBehaviour, IPunObservable
 
     public void SetGameDataId(string ID)
     {
-        //photonView.RPC("RPCSetGameDataID", RpcTarget.All, ID);
         dataId = ID;
     }
-    //[PunRPC]
-    //void RPCSetGameDataID(string ID)
-    //{
-    //    dataId = ID;
-    //}
 }

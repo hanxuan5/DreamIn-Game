@@ -140,7 +140,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void EndButton()
     {
-
+        EndCountTime();
     }
 
 #endregion
@@ -380,20 +380,23 @@ public class GameManager : MonoBehaviourPunCallbacks
     #endregion
 
     #region 计时部分
+    private IEnumerator IECountTime;
     void StartCountTime(int t)
     {
         if(PhotonNetwork.IsMasterClient)
         {
             //t是分钟
             countTime = t * 60;
-            StartCoroutine(CountTime());
+            IECountTime = CountTime();
+            StartCoroutine(IECountTime);
         }
     }
 
     void EndCountTime()
     {
-        StopCoroutine(CountTime());
-        GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, 0);
+        StopCoroutine(IECountTime);
+        countTime = 0;
+        GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, countTime);
         GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
     }
 
