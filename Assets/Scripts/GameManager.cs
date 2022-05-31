@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject readyButton;
     public GameObject watchButton;
     public GameObject startButton;
+    public GameObject finishButton;
     public GameObject scriptScroll;
     public GameObject canvas;
     public GameObject objects;
@@ -110,6 +111,10 @@ public class GameManager : MonoBehaviourPunCallbacks
             Debug.Log("没有下载完成");
             return;
         }
+        if (PhotonNetwork.IsMasterClient)
+        {
+            finishButton.SetActive(true);
+        }
         startButton.SetActive(false);
         timer.SetActive(true);
 
@@ -131,6 +136,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         //一旦游戏开始，就会生成这个物体表示游戏已经开始，之后加入的玩家只能观战
         GameObject flag = PhotonNetwork.Instantiate("GameStartFlag", canvas.transform.position, Quaternion.identity, 0);
         flag.GetComponent<DataID>().SetGameDataId(gameDataID);
+    }
+
+    public void EndButton()
+    {
+
     }
 
 #endregion
@@ -181,7 +191,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
                 obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
                 obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
-                obj.transform.localPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition() - canvas.transform.position;
+                obj.transform.localPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition();
             }
         }
 
@@ -294,7 +304,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
         imageLink += addr;
         imageLink = imageLink.Replace(" ", "%20");
-
+        imageLink += ".png";
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
         yield return www.SendWebRequest();
 
@@ -321,6 +331,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
         imageLink += addr;
         imageLink = imageLink.Replace(" ", "%20");
+        imageLink += ".png";
 
         UnityWebRequest www = UnityWebRequestTexture.GetTexture(imageLink);
         yield return www.SendWebRequest();
@@ -373,10 +384,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(PhotonNetwork.IsMasterClient)
         {
-            countTime = t;
+            //t是分钟
+            countTime = t * 60;
             StartCoroutine(CountTime());
         }
     }
+
+    void EndCountTime()
+    {
+        StopCoroutine(CountTime());
+        GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, 0);
+        GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
+    }
+
     IEnumerator CountTime()
     {
         while(true)
