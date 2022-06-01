@@ -154,7 +154,7 @@ MonoBehaviour:
   photonView: {fileID: -6639744696233882008}
   freazeX: 0
   freazeY: 0
-  smoothTime: 0.03
+  smoothTime: 0
 --- !u!114 &1350979151766372047
 MonoBehaviour:
   m_ObjectHideFlags: 0

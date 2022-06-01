@@ -9,16 +9,19 @@ public class VotePanel : MonoBehaviour, IPunObservable
 {
     public GameObject content;
     public GameObject item;
+    public TMP_Text TitleText;
     public TMP_Text TimerText;
-    public TMP_Text FinalText;
+    public Button voteButton;
+    public Button voteResultButton;
 
     internal string selectedName;
     private int countTime;
-    private PhotonView photonView;
 
+    private int voteNum;//ËÆ∞ÂΩïÂèÇ‰∏éÊäïÁ•®ÁöÑÁé©ÂÆ∂Êï∞Èáè
+    private List<GameObject> itemList;
     Dictionary<string, int> voteData;
-
     
+    private PhotonView photonView;
 
     private void Awake()
     {
@@ -31,36 +34,36 @@ public class VotePanel : MonoBehaviour, IPunObservable
     }
     public void CreatePlayerItem(GameObject[] players)
     {
-        List<GameObject> itemList = new List<GameObject>();
-        //‘⁄ Content ¿Ô…˙≥… _count ∏ˆitem
+        itemList = new List<GameObject>();
+
         if (players.Length > 0)
         {
             int i = 0;
-            item.SetActive(true); //µ⁄“ª∏ˆitem µ¿˝“—æ≠∑≈‘⁄¡–±Ìµ⁄“ª∏ˆŒª÷√£¨÷±Ω”º§ªÓ
+            item.SetActive(true); 
             itemList.Add(item);
 
             string playerName = players[i].GetComponent<playerScript>().playerName;
-            itemList[i].GetComponentInChildren<TMP_Text>().text = playerName;
+            itemList[i].transform.GetChild(0).GetComponent<TMP_Text>().text= playerName;
             voteData.Add(playerName, 0);
             i++;
 
             while (i < players.Length)
             {
                 GameObject a = GameObject.Instantiate(item) as GameObject;
-                a.transform.parent = content.transform; //…Ë÷√Œ™ Content µƒ◊”∂‘œÛ
+                a.transform.parent = content.transform; 
                 itemList.Add(a);
-                RectTransform t = itemList[i - 1].GetComponent<RectTransform>(); //ªÒ»°«∞“ª∏ˆ item µƒŒª÷√    
-                                                                                 //µ±«∞ item Œª÷√∑≈‘⁄‘⁄«∞“ª∏ˆ item œ¬∑Ω    
+                RectTransform t = itemList[i - 1].GetComponent<RectTransform>(); 
+                
                 a.GetComponent<RectTransform>().localPosition =
                  new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-20, t.localPosition.z);
                 a.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
                 string name= players[i].GetComponent<playerScript>().playerName;
-                a.GetComponentInChildren<TMP_Text>().text = name;
+                a.transform.GetChild(0).GetComponent<TMP_Text>().text = name;
                 voteData.Add(name, 0);
                 i++;
             }
-            //∏˘æ›µ±«∞ item ∏ˆ ˝∏¸–¬ Content ∏ﬂ∂» 
+
             content.GetComponent<RectTransform>().sizeDelta =
               new Vector2(content.GetComponent<RectTransform>().sizeDelta.x, itemList.Count * (item.GetComponent<RectTransform>().rect.height+20));
         }
@@ -72,7 +75,7 @@ public class VotePanel : MonoBehaviour, IPunObservable
 
     public void VoteThisPlayer(Button btn)
     {
-        {//—°÷–∏√∞¥≈•£¨∏ƒ±‰∆‰—’…´Œ™—°÷–◊¥Ã¨
+        {
             ColorBlock cb = btn.colors;
             cb.highlightedColor = btn.colors.highlightedColor;
             cb.pressedColor = btn.colors.pressedColor;
@@ -86,49 +89,93 @@ public class VotePanel : MonoBehaviour, IPunObservable
     public void VoteButton()
     {
         FinishVote();
+        voteButton.enabled = false;
     }
 
     void FinishVote()
     {
+        voteNum++;
         if (selectedName == null) return;
         voteData[selectedName]++;
-
-        string t = "";
-        foreach(var it in voteData)
+        
+        if(voteNum==itemList.Count)
         {
-            t += it.Key + ": " + it.Value+"\n";
+            ShowVoteResult();
         }
-        FinalText.text = t;
+    }
+    void ShowVoteResult()
+    {
+        GameObject maxItem = null;
+        int maxNum = 0;
+        foreach (var item in itemList)
+        {
+            string name = item.transform.Find("NameText").GetComponent<TMP_Text>().text;
+            foreach (var data in voteData)
+            {
+                if (data.Key == name)
+                {
+                    item.transform.GetChild(1).GetComponent<TMP_Text>().text = data.Value.ToString();
+                    if (data.Value > maxNum)
+                    {
+                        maxNum = data.Value;
+                        maxItem = item;
+                    }
+                }
+            }
+        }
+        if (maxItem != null)//È´ò‰∫ÆÊúÄÂ§ßÁ•®Êï∞ÁöÑ‰∫∫
+        {
+            Button btn = maxItem.GetComponent<Button>();
+            ColorBlock cb = btn.colors;
+            cb.normalColor = btn.colors.highlightedColor;
+            cb.highlightedColor = btn.colors.highlightedColor;
+            cb.pressedColor = btn.colors.pressedColor;
+            cb.disabledColor = btn.colors.disabledColor;
+            cb.selectedColor = btn.colors.highlightedColor;
+            //btn.colors = cb;
+            maxItem.GetComponent<Button>().colors = cb;
+        }
+
+        TimerText.gameObject.SetActive(false);
+        TitleText.text = "Vote Result";
+
+        voteButton.gameObject.SetActive(false);
+        voteResultButton.gameObject.SetActive(true);
+
+        StopCountTime();
     }
 
-    /// <summary>
-    /// Õ¨≤Ω∑Ω∑®£¨Õ¨≤ΩÕ∂∆± ˝–≈œ¢
-    /// </summary>
-    /// <param name="stream"></param>
-    /// <param name="info"></param>
+
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting == true)
         {
             stream.SendNext(voteData);
+            stream.SendNext(voteNum);
         }
         else
         {
             voteData = (Dictionary<string,int>)stream.ReceiveNext();
+            voteNum = (int)stream.ReceiveNext();
         }
     }
 
-    #region Õ∂∆±∞‚µƒº∆ ±≤ø∑÷
+    #region ÊäïÁ•®ÊùøËÆ°Êó∂
+    IEnumerator IECountTime;
     void StartCountTime(float t)
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            //t «∑÷÷”
             countTime = (int)(t * 60);
-            StartCoroutine(CountTime());
+            IECountTime = CountTime();
+            StartCoroutine(IECountTime);
         }
     }
 
+    void StopCountTime()
+    {
+        StopCoroutine(IECountTime);
+    }
     IEnumerator CountTime()
     {
         while (true)
