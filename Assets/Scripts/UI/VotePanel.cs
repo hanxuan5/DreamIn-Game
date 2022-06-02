@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using Photon.Pun;
 using TMPro;
 
-public class VotePanel : MonoBehaviour, IPunObservable
+public class VotePanel : MonoBehaviour
 {
     public GameObject content;
     public GameObject item;
@@ -17,7 +17,8 @@ public class VotePanel : MonoBehaviour, IPunObservable
     internal string selectedName;
     private int countTime;
 
-    private int voteNum;//记录参与投票的玩家数量
+    [SerializeField]
+    private int voteNum;//记录已经投票的人数
     private List<GameObject> itemList;
     Dictionary<string, int> voteData;
     
@@ -31,6 +32,15 @@ public class VotePanel : MonoBehaviour, IPunObservable
     private void OnEnable()
     {
         StartCountTime(0.5f);
+    }
+
+    private void Update()
+    {
+        if (PhotonNetwork.IsMasterClient && voteNum == itemList.Count)
+        {
+            photonView.RPC("RPCShowVoteResult", RpcTarget.All);
+            voteNum = 0;
+        }
     }
     public void CreatePlayerItem(GameObject[] players)
     {
@@ -75,7 +85,7 @@ public class VotePanel : MonoBehaviour, IPunObservable
 
     public void VoteThisPlayer(Button btn)
     {
-        {
+        {//选中该玩家，改变其颜色
             ColorBlock cb = btn.colors;
             cb.highlightedColor = btn.colors.highlightedColor;
             cb.pressedColor = btn.colors.pressedColor;
@@ -89,21 +99,17 @@ public class VotePanel : MonoBehaviour, IPunObservable
     public void VoteButton()
     {
         FinishVote();
-        voteButton.enabled = false;
+        voteButton.gameObject.SetActive(false);
     }
 
     void FinishVote()
     {
-        voteNum++;
-        if (selectedName == null) return;
-        voteData[selectedName]++;
-        
-        if(voteNum==itemList.Count)
-        {
-            ShowVoteResult();
-        }
+        photonView.RPC("RPCAddVoteNum", RpcTarget.All);
+        if (selectedName != null)
+            photonView.RPC("RPCAddVoteData", RpcTarget.All,selectedName);
     }
-    void ShowVoteResult()
+    [PunRPC]
+    void RPCShowVoteResult()
     {
         GameObject maxItem = null;
         int maxNum = 0;
@@ -145,20 +151,34 @@ public class VotePanel : MonoBehaviour, IPunObservable
         StopCountTime();
     }
 
-
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    [PunRPC]
+    void RPCAddVoteNum()
     {
-        if (stream.IsWriting == true)
-        {
-            stream.SendNext(voteData);
-            stream.SendNext(voteNum);
-        }
-        else
-        {
-            voteData = (Dictionary<string,int>)stream.ReceiveNext();
-            voteNum = (int)stream.ReceiveNext();
-        }
+        voteNum++;
     }
+
+    [PunRPC]
+    void RPCAddVoteData(string name)
+    {
+        voteData[name]++;
+    }
+
+    ///// <summary>
+    ///// 使用photon传输流同步数据
+    ///// </summary>
+    ///// <param name="stream"></param>
+    ///// <param name="info"></param>
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    //if (stream.IsWriting == true)
+    //    //{
+    //    //    stream.SendNext(voteData);
+    //    //}
+    //    //else
+    //    //{
+    //    //    voteData = (Dictionary<string,int>)stream.ReceiveNext();
+    //    //}
+    //}
 
     #region 投票板计时
     IEnumerator IECountTime;
@@ -174,7 +194,8 @@ public class VotePanel : MonoBehaviour, IPunObservable
 
     void StopCountTime()
     {
-        StopCoroutine(IECountTime);
+        if (PhotonNetwork.IsMasterClient)
+            StopCoroutine(IECountTime);
     }
     IEnumerator CountTime()
     {

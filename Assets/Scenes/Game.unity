@@ -6684,7 +6684,7 @@ GameObject:
   - component: {fileID: 1838967570}
   - component: {fileID: 1838967569}
   - component: {fileID: 1838967572}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -6724,10 +6724,10 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 36.073467
+  field of view: 26.991467
   orthographic: 1
   orthographic size: 256
-  m_Depth: -1
+  m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -6771,7 +6771,7 @@ MonoBehaviour:
   target: {fileID: 0}
   freazeX: 0
   freazeY: 0
-  smoothTime: 0
+  smoothTime: 0.3
 --- !u!1 &1884626633
 GameObject:
   m_ObjectHideFlags: 0

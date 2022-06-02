@@ -27,9 +27,26 @@ public class CameraFollow : MonoBehaviour
         startPosition = transform.position;
     }
 
-    void LateUpdate()
+    void Update()
     {
-        if(target!=null)
+        if (target != null)
+        {
+            oldPosition = transform.position;
+            if (!freazeX)
+            {
+                oldPosition.x = Mathf.SmoothDamp(transform.position.x, target.transform.position.x + offset.x, ref xVelocity, smoothTime);
+            }
+            if (!freazeY)
+            {
+                oldPosition.y = Mathf.SmoothDamp(transform.position.y, target.transform.position.y + offset.y, ref yVelocity, smoothTime);
+            }
+            transform.position = oldPosition;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        if (target != null)
         {
             oldPosition = transform.position;
             if (!freazeX)
@@ -44,6 +61,23 @@ public class CameraFollow : MonoBehaviour
             transform.position = oldPosition;
         }
     }
+    //private void LateUpdate()
+    //{
+    //    if (target != null)
+    //    {
+    //        oldPosition = transform.position;
+    //        if (!freazeX)
+    //        {
+    //            oldPosition.x = Mathf.SmoothDamp(transform.position.x, target.transform.position.x + offset.x, ref xVelocity, smoothTime);
+    //        }
+
+    //        if (!freazeY)
+    //        {
+    //            oldPosition.y = Mathf.SmoothDamp(transform.position.y, target.transform.position.y + offset.y, ref yVelocity, smoothTime);
+    //        }
+    //        transform.position = oldPosition;
+    //    }
+    //}
 
     public void SetTarget(GameObject t)
     {

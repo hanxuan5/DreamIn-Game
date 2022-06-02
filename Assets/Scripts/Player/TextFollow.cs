@@ -29,8 +29,24 @@ public class TextFollow : MonoBehaviour
     {
         startPosition = transform.position;
     }
+    void Update()
+    {
+        if (target != null)
+        {
+            oldPosition = transform.position;
+            if (!freazeX)
+            {
+                oldPosition.x = Mathf.SmoothDamp(transform.position.x, target.transform.position.x + offset.x, ref xVelocity, smoothTime);
+            }
 
-    void LateUpdate()
+            if (!freazeY)
+            {
+                oldPosition.y = Mathf.SmoothDamp(transform.position.y, target.transform.position.y + offset.y, ref yVelocity, smoothTime);
+            }
+            transform.position = oldPosition;
+        }
+    }
+    void FixedUpdate()
     {
         if (target != null)
         {

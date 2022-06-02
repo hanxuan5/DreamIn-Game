@@ -10,7 +10,7 @@ using LitJson;
 using TMPro;
 
 public class GameManager : MonoBehaviourPunCallbacks
-{ 
+{
     public GameObject readyButton;
     public GameObject watchButton;
     public GameObject startButton;
@@ -86,10 +86,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         localPlayer.transform.localPosition = new Vector2(0, 0);
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//开启相机跟随
 
-        GameObject t = PhotonNetwork.Instantiate("PlayerNameText", localPlayer.transform.position + new Vector3(0, 25, 0), Quaternion.identity, 0);
-        t.GetComponent<TextFollow>().SetTarget(localPlayer);
-        localPlayer.GetComponent<playerScript>().nameText = t.GetComponent<TMP_Text>();
-
         readyButton.SetActive(false);
         watchButton.SetActive(false);
         if (PhotonNetwork.IsMasterClient)
@@ -120,14 +116,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         startButton.SetActive(false);
         timer.SetActive(true);
-        //分配人物
+        //随机分配人物
         List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
+        List<int> selectedIndex=new List<int>();
         for(int i=0;i<playerObj.Length;i++)
         {
             int index = Random.Range(0, characters.Count);
-            characters.RemoveAt(index);
-            playerObj[i].GetComponent<playerScript>().SetPlayerData( index);
+            while(selectedIndex.Contains(index))
+                index = Random.Range(0, characters.Count);
+
+            selectedIndex.Add(index);
+            playerObj[i].GetComponent<playerScript>().SetPlayerData(index);
         }
 
         GM_PhotonView.RPC("RPCSetPlayerInfoPanel", RpcTarget.All);
@@ -438,7 +438,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             map.transform.SetSiblingIndex(0);
 
             //设置sprite
-            map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+            map.GetComponent<Image>().sprite =  Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
         }
 
         //初始化Object
