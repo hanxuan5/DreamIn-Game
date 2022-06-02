@@ -9,9 +9,9 @@ using TMPro;
 public class playerScript : MonoBehaviourPun
 {
     public TMP_Text nameText;
-    internal string playerName;
+    public GameObject nameTextObj;
 
-    //public int voteNum=0;//玩家得票数
+    internal string playerName;
     private int playerIndex;//玩家在character数组中的编号
     private int playerIdentity;//玩家的身份
     private GameData gameData;
@@ -22,8 +22,28 @@ public class playerScript : MonoBehaviourPun
     void Start()
     {
         body = GetComponent<Rigidbody2D>();
-    }
 
+        //GameObject t = PhotonNetwork.Instantiate("PlayerNameText", transform.position + new Vector3(0, 25, 0), Quaternion.identity, 0);
+        GameObject t = GameObject.Instantiate(nameTextObj, transform.position + new Vector3(0, 25, 0), Quaternion.identity);
+        GameObject canvas = GameObject.Find("GameCanvas");
+        t.transform.SetParent(canvas.transform);
+        t.transform.localScale = new Vector3(1, 1, 1);
+
+        t.GetComponent<TextFollow>().SetTarget(gameObject);
+        nameText = t.GetComponent<TMP_Text>();
+    }
+    //private void Update()
+    //{
+    //    if (!photonView.IsMine && PhotonNetwork.IsConnected)
+    //    {
+    //        return;
+    //    }
+    //    float h = Input.GetAxisRaw("Horizontal");
+    //    float v = Input.GetAxisRaw("Vertical");
+
+    //    Vector2 dir = new Vector2(h, v);
+    //    body.velocity = dir * runSpeed;
+    //}
     private void FixedUpdate()
     {
         if (!photonView.IsMine && PhotonNetwork.IsConnected)
@@ -34,9 +54,7 @@ public class playerScript : MonoBehaviourPun
         float v = Input.GetAxisRaw("Vertical");
 
         Vector2 dir = new Vector2(h, v);
-        dir *= runSpeed;
-
-        body.velocity = dir;
+        body.velocity =dir*runSpeed;
     }
     /// <summary>
     /// 根据信息配置player
@@ -58,6 +76,7 @@ public class playerScript : MonoBehaviourPun
         playerIdentity = gameData.result.info.character[playerIndex].identity;
         //TODO::设置人物贴图
     }
+
     public void SetPlayerName(string name)
     {
         photonView.RPC("RPCSetPlayerName", RpcTarget.All, name);
