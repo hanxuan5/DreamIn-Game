@@ -120,7 +120,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         startButton.SetActive(false);
         timer.SetActive(true);
-
         //分配人物
         List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
@@ -148,88 +147,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 #endregion
 
-    public void UpdateScene()
-    {
-        //删除初始场景
-        Destroy(initialScene);
-        foreach (Transform child in colliders.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
-        //设置计时
-        countTime = gameData.result.info.length;
-        //初始化地图
-        {
-            GameObject map = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
-
-            map.transform.SetParent(canvas.transform);
-            map.transform.localScale = new Vector3(1, 1, 1);
-
-            //设置地图的位置
-            float w = gameData.result.info.Map[0].mapTexture.width;
-            float h = gameData.result.info.Map[0].mapTexture.height;
-            map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
-            map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-
-            //设置地图在UI层级的最下层
-            map.transform.SetSiblingIndex(0);
-
-            //设置sprite
-            map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
-        }
-
-        //初始化Object
-        {
-            //目前map是一个数组，这是暂时方法，只获取map[0]
-            for (int i = 0; i < gameData.result.info.Map[0].Map_Object.Count; i++)
-            {
-                GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
-
-                obj.transform.SetParent(canvas.transform);
-                obj.transform.localScale = new Vector3(1, 1, 1);
-
-                float w = gameData.result.info.Map[0].Map_Object[i].objTexture.width;
-                float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
-                obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
-                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
-                obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
-                obj.transform.localPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition();
-            }
-        }
-
-        //初始化碰撞体
-        {
-            float w = gameData.result.info.Map[0].mapTexture.width / 2;
-            float h = gameData.result.info.Map[0].mapTexture.height / 2;
-            string[] rows = gameData.result.info.Map[0].collide_map.Split(';');
-            for (int i = 0; i < rows.Length; i++)
-            {
-                string[] cols = rows[i].Split(',');
-                for (int j = 0; j < cols.Length - 1; j++)
-                {
-                    GameObject obj = Instantiate(colliderPrefab, new Vector2(0, 0), Quaternion.identity, colliders.transform);
-                    obj.transform.localPosition = new Vector3(-w + int.Parse(cols[j]) * ColliderSize + ColliderSize / 2, h - i * ColliderSize - ColliderSize / 2, 0);
-                }
-            }
-        }
-
-        //设置人物在UI层级的最上层
-        {
-            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-            foreach(GameObject it in players)
-                it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
-
-            GameObject[] watchers = GameObject.FindGameObjectsWithTag("Watcher");
-            foreach(GameObject it in watchers)
-                it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
-        }
-
-        //设置结尾
-        FinalText.text = gameData.result.info.end;
-    }
-
-    #region 游戏数据下载
+#region 游戏数据下载
     public void DownLoadGameData(string ID)
     {
         gameDataID = ID;
@@ -380,9 +298,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         isDownloadCompelete = true;
         UpdateScene();
     }
-    #endregion
+#endregion
 
-    #region 计时部分
+#region 计时部分
     private IEnumerator IECountTime;
     void StartCountTime(int t)
     {
@@ -485,11 +403,92 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(localPlayer!=null)
         {
-            PlayerNameText.text = localPlayer.GetComponent<playerScript>().GetPlayerName();
-            PlayerIdentityText.text = localPlayer.GetComponent<playerScript>().GetPlayerIdentity();
+            PlayerNameText.text = "Your name is " + localPlayer.GetComponent<playerScript>().GetPlayerName();
+            PlayerIdentityText.text = "You are a " + localPlayer.GetComponent<playerScript>().GetPlayerIdentity();
             PlayerInfoText.text = localPlayer.GetComponent<playerScript>().GetPlayerInfo();
             PlayerInfoText.transform.parent.parent.parent.parent.gameObject.SetActive(true);
         }
+    }
+
+    public void UpdateScene()
+    {
+        //删除初始场景
+        Destroy(initialScene);
+        foreach (Transform child in colliders.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        //设置计时
+        countTime = gameData.result.info.length;
+        //初始化地图
+        {
+            GameObject map = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
+
+            map.transform.SetParent(canvas.transform);
+            map.transform.localScale = new Vector3(1, 1, 1);
+
+            //设置地图的位置
+            float w = gameData.result.info.Map[0].mapTexture.width;
+            float h = gameData.result.info.Map[0].mapTexture.height;
+            map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
+            map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+
+            //设置地图在UI层级的最下层
+            map.transform.SetSiblingIndex(0);
+
+            //设置sprite
+            map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+        }
+
+        //初始化Object
+        {
+            //目前map是一个数组，这是暂时方法，只获取map[0]
+            for (int i = 0; i < gameData.result.info.Map[0].Map_Object.Count; i++)
+            {
+                GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
+
+                obj.transform.SetParent(canvas.transform);
+                obj.transform.localScale = new Vector3(1, 1, 1);
+
+                float w = gameData.result.info.Map[0].Map_Object[i].objTexture.width;
+                float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
+                obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
+                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+                obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
+                obj.transform.localPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition();
+            }
+        }
+
+        //初始化碰撞体
+        {
+            float w = gameData.result.info.Map[0].mapTexture.width / 2;
+            float h = gameData.result.info.Map[0].mapTexture.height / 2;
+            string[] rows = gameData.result.info.Map[0].collide_map.Split(';');
+            for (int i = 0; i < rows.Length; i++)
+            {
+                string[] cols = rows[i].Split(',');
+                for (int j = 0; j < cols.Length - 1; j++)
+                {
+                    GameObject obj = Instantiate(colliderPrefab, new Vector2(0, 0), Quaternion.identity, colliders.transform);
+                    obj.transform.localPosition = new Vector3(-w + int.Parse(cols[j]) * ColliderSize + ColliderSize / 2, h - i * ColliderSize - ColliderSize / 2, 0);
+                }
+            }
+        }
+
+        //设置人物在UI层级的最上层
+        {
+            GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+            foreach (GameObject it in players)
+                it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
+
+            GameObject[] watchers = GameObject.FindGameObjectsWithTag("Watcher");
+            foreach (GameObject it in watchers)
+                it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
+        }
+
+        //设置结尾
+        FinalText.text = gameData.result.info.end;
     }
 
 }
