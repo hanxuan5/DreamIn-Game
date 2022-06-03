@@ -20,8 +20,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject objects;
     public GameObject colliders;
     public GameObject objectPrefab;
+    public GameObject mapPrefab;
     public GameObject colliderPrefab;
     public GameObject votePanel;
+    public GameObject objectInfoPanel;
     public GameObject timer;
     public GameObject initialScene;
 
@@ -311,6 +313,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             IECountTime = CountTime();
             StartCoroutine(IECountTime);
         }
+        GM_PhotonView.RPC("RPCShowTimerText", RpcTarget.All);
     }
 
     void EndCountTime()
@@ -335,7 +338,11 @@ public class GameManager : MonoBehaviourPunCallbacks
             yield return new WaitForSeconds(1);
         }
     }
-
+    [PunRPC]
+    void RPCShowTimerText()
+    {
+        timer.gameObject.SetActive(true);
+    }
     [PunRPC]
     void RPCSetTimerText(int t)
     {
@@ -423,7 +430,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         countTime = gameData.result.info.length;
         //≥ı ºªØµÿÕº
         {
-            GameObject map = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
+            GameObject map = Instantiate(mapPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
 
             map.transform.SetParent(canvas.transform);
             map.transform.localScale = new Vector3(1, 1, 1);
@@ -455,6 +462,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
                 obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+                obj.GetComponent<Object>().objectInfoPanel = objectInfoPanel;
                 obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
                 obj.transform.localPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition();
             }

@@ -19,11 +19,13 @@ public class playerScript : MonoBehaviourPun
     private Rigidbody2D body;
     public float runSpeed = 20.0f;
 
-    void Start()
+    private Animator animator;
+    void Awake()
     {
         body = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
 
-        //GameObject t = PhotonNetwork.Instantiate("PlayerNameText", transform.position + new Vector3(0, 25, 0), Quaternion.identity, 0);
+        //生成玩家名字面板并让其跟踪玩家
         GameObject t = GameObject.Instantiate(nameTextObj, transform.position + new Vector3(0, 25, 0), Quaternion.identity);
         GameObject canvas = GameObject.Find("GameCanvas");
         t.transform.SetParent(canvas.transform);
@@ -32,29 +34,53 @@ public class playerScript : MonoBehaviourPun
         t.GetComponent<TextFollow>().SetTarget(gameObject);
         nameText = t.GetComponent<TMP_Text>();
     }
-    //private void Update()
-    //{
-    //    if (!photonView.IsMine && PhotonNetwork.IsConnected)
-    //    {
-    //        return;
-    //    }
-    //    float h = Input.GetAxisRaw("Horizontal");
-    //    float v = Input.GetAxisRaw("Vertical");
-
-    //    Vector2 dir = new Vector2(h, v);
-    //    body.velocity = dir * runSpeed;
-    //}
     private void FixedUpdate()
     {
         if (!photonView.IsMine && PhotonNetwork.IsConnected)
-        {
             return;
-        }
+
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
         Vector2 dir = new Vector2(h, v);
         body.velocity =dir*runSpeed;
+
+        if (v > 0)
+        {
+            animator.SetBool("up", true);
+            animator.SetBool("down", false);
+            animator.SetBool("left", false);
+            animator.SetBool("right", false);
+        }
+        else if (v < 0)
+        {
+            animator.SetBool("up", false);
+            animator.SetBool("down", true);
+            animator.SetBool("left", false);
+            animator.SetBool("right", false);
+        }
+        if (h > 0)
+        {
+            animator.SetBool("up", false);
+            animator.SetBool("down", false);
+            animator.SetBool("left", false);
+            animator.SetBool("right", true);
+        }
+        else if (h < 0)
+        {
+            animator.SetBool("up", false);
+            animator.SetBool("down", false);
+            animator.SetBool("left", true);
+            animator.SetBool("right", false);
+        }
+
+        if (h == 0 && v == 0)
+        {
+            animator.SetBool("up", false);
+            animator.SetBool("down", false);
+            animator.SetBool("left", false);
+            animator.SetBool("right", false);
+        }
     }
     /// <summary>
     /// 根据信息配置player
