@@ -8,34 +8,49 @@ using TMPro;
 
 public class Object : MonoBehaviour
 {
-    public GameObject message;
-    PhotonView photonView;
+    public GameObject tipText;
+    public GameObject objectInfoPanel;
+    private PhotonView photonView;
+    private bool isInterable=false;
     void Start()
     {
         photonView = GetComponent<PhotonView>();
     }
+    private void Update()
+    {
+        if(isInterable)
+        {
+            if(Input.GetKeyDown(KeyCode.X))
+            {
+                objectInfoPanel.SetActive(true);
+            }
+        }
+    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player") && message.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text.Length > 0)
+        if(collision.CompareTag("Player")&& collision.gameObject.GetComponent<playerScript>().photonView.IsMine)
         {
-            message.SetActive(true);
+            tipText.SetActive(true);
+            isInterable = true;
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player"))
+        if(collision.CompareTag("Player")&& collision.gameObject.GetComponent<playerScript>().photonView.IsMine)
         {
-            message.SetActive(false);
+            tipText.SetActive(false);
+            isInterable = false;
         }
     }
 
     public void HideButton()
     {
-        message.SetActive(false);
+        tipText.SetActive(false);
     }
 
     public void SetInfoText(string info)
     {
-        message.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = info;
+        objectInfoPanel.GetComponentInChildren<TMP_Text>().text = info;
+        
     }
 }
