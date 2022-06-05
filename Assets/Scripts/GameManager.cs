@@ -68,7 +68,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 #region 按钮点击事件
     public void WatchButton()
     {
-        localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        string playerName = "Player " + (int)Random.Range(1, 7);//随机选择一个人物
+        localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
         localPlayer.GetComponent<playerScript>().SetPlayerTag("Watcher");
         localPlayer.GetComponent<playerScript>().SetPlayerName("Watcher");
@@ -84,7 +85,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void ReadyButton()
     {
-        localPlayer = PhotonNetwork.Instantiate("Player", canvas.transform.position, Quaternion.identity, 0);
+        string playerName = "Player " + (int)Random.Range(1, 7);//随机选择一个人物
+        localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//开启相机跟随
 
@@ -404,6 +406,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         votePanel.GetComponent<VotePanel>().CreatePlayerItem(GameObject.FindGameObjectsWithTag("Player"));
     }
 #endregion
+
 
     [PunRPC]
     void RPCSetPlayerInfoPanel()

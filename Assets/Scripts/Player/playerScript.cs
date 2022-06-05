@@ -26,11 +26,10 @@ public class playerScript : MonoBehaviourPun
         animator = GetComponent<Animator>();
 
         //生成玩家名字面板并让其跟踪玩家
-        GameObject t = GameObject.Instantiate(nameTextObj, transform.position + new Vector3(0, 25, 0), Quaternion.identity);
+        GameObject t = GameObject.Instantiate(nameTextObj, transform.position + new Vector3(0, 40, 0), Quaternion.identity);
         GameObject canvas = GameObject.Find("GameCanvas");
         t.transform.SetParent(canvas.transform);
         t.transform.localScale = new Vector3(1, 1, 1);
-
         t.GetComponent<TextFollow>().SetTarget(gameObject);
         nameText = t.GetComponent<TMP_Text>();
     }
@@ -151,24 +150,5 @@ public class playerScript : MonoBehaviourPun
         return gameData.result.info.character[playerIndex].background;
     }
 
-    ///// <summary>
-    ///// 同步方法，同步投票数信息
-    ///// </summary>
-    ///// <param name="stream"></param>
-    ///// <param name="info"></param>
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    if (stream.IsWriting == true)
-    //    {
-    //        stream.SendNext(voteNum);
-    //    }
-    //    else
-    //    {
-    //        voteNum = (int)stream.ReceiveNext();
-    //    }
-    //}
-    //public void AddVoteNum()
-    //{
-    //    voteNum++;
-    //}
+  
 }
