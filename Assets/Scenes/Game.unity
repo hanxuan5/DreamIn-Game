@@ -7787,6 +7787,14 @@ MonoBehaviour:
   PlayerIdentityText: {fileID: 526004369}
   FinalText: {fileID: 1946757377}
   TimerText: {fileID: 1194231368}
+  playerAnimator:
+  - {fileID: 9100000, guid: d35b54542773a78409be03d96852ef67, type: 2}
+  - {fileID: 9100000, guid: 85b241a817cb78140ad7155238687f18, type: 2}
+  - {fileID: 9100000, guid: 444b390d2b93cf447ba2537bfdede633, type: 2}
+  - {fileID: 9100000, guid: 3ec5ffa99cab4734a98902ccf0fbb102, type: 2}
+  - {fileID: 9100000, guid: cd1bc83b103dee843bc44bcb59f1463a, type: 2}
+  - {fileID: 9100000, guid: 44383224f7d21b1408c3697b9a386100, type: 2}
+  - {fileID: 9100000, guid: 4c9f972a645827947954a645e1763632, type: 2}
 --- !u!4 &1976860448
 Transform:
   m_ObjectHideFlags: 0
