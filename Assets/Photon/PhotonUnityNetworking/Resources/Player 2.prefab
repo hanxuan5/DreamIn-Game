@@ -142,7 +142,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: PlayerName
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 4f555b28a3b4c4ba0abe7025b8b7fcbc, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
@@ -206,7 +206,7 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
-  m_hasFontAssetChanged: 0
+  m_hasFontAssetChanged: 1
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
 --- !u!1 &5704281589670969547
@@ -361,7 +361,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 20, y: 20}
+  m_Size: {x: 25, y: 40}
   m_EdgeRadius: 0
 --- !u!114 &5898787192002990105
 MonoBehaviour:
@@ -408,15 +408,6 @@ MonoBehaviour:
   nameText: {fileID: 0}
   nameTextObj: {fileID: 1350979151766372041, guid: 313b2de9ffc303e4fa4ea7ac2c66dca3, type: 3}
   runSpeed: 200
-  animatorIndex: 0
-  playerAnimator:
-  - {fileID: 9100000, guid: d35b54542773a78409be03d96852ef67, type: 2}
-  - {fileID: 9100000, guid: 85b241a817cb78140ad7155238687f18, type: 2}
-  - {fileID: 9100000, guid: 444b390d2b93cf447ba2537bfdede633, type: 2}
-  - {fileID: 9100000, guid: 3ec5ffa99cab4734a98902ccf0fbb102, type: 2}
-  - {fileID: 9100000, guid: cd1bc83b103dee843bc44bcb59f1463a, type: 2}
-  - {fileID: 9100000, guid: 44383224f7d21b1408c3697b9a386100, type: 2}
-  - {fileID: 9100000, guid: 4c9f972a645827947954a645e1763632, type: 2}
 --- !u!114 &5898787192002990119
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -450,7 +441,6 @@ MonoBehaviour:
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents:
-  - {fileID: 5704281589670969558}
   - {fileID: 5391969475524589791}
   - {fileID: 3505863101141156905}
   sceneViewId: 0

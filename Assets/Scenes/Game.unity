@@ -1046,7 +1046,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 438.503}
-  m_SizeDelta: {x: 305.08, y: 86.991}
+  m_SizeDelta: {x: 1500, y: 86.991}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &526004369
 MonoBehaviour:
@@ -1095,10 +1095,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60.05
-  m_fontSizeBase: 36
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -4931,7 +4931,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 525.928}
-  m_SizeDelta: {x: 305.077, y: 87.865}
+  m_SizeDelta: {x: 1500, y: 87.865}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1291564963
 MonoBehaviour:
@@ -4980,10 +4980,10 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 60.65
-  m_fontSizeBase: 36
+  m_fontSize: 60
+  m_fontSizeBase: 60
   m_fontWeight: 400
-  m_enableAutoSizing: 1
+  m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
@@ -7787,14 +7787,6 @@ MonoBehaviour:
   PlayerIdentityText: {fileID: 526004369}
   FinalText: {fileID: 1946757377}
   TimerText: {fileID: 1194231368}
-  playerAnimator:
-  - {fileID: 9100000, guid: d35b54542773a78409be03d96852ef67, type: 2}
-  - {fileID: 9100000, guid: 85b241a817cb78140ad7155238687f18, type: 2}
-  - {fileID: 9100000, guid: 444b390d2b93cf447ba2537bfdede633, type: 2}
-  - {fileID: 9100000, guid: 3ec5ffa99cab4734a98902ccf0fbb102, type: 2}
-  - {fileID: 9100000, guid: cd1bc83b103dee843bc44bcb59f1463a, type: 2}
-  - {fileID: 9100000, guid: 44383224f7d21b1408c3697b9a386100, type: 2}
-  - {fileID: 9100000, guid: 4c9f972a645827947954a645e1763632, type: 2}
 --- !u!4 &1976860448
 Transform:
   m_ObjectHideFlags: 0
