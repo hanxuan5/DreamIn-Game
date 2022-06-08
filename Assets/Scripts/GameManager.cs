@@ -493,6 +493,9 @@ public class GameManager : MonoBehaviourPunCallbacks
             foreach (GameObject it in players)
                 it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
 
+            if (localPlayer != null)//自己应该在最上层
+                localPlayer.transform.SetSiblingIndex(localPlayer.transform.parent.childCount - 1);
+
             GameObject[] watchers = GameObject.FindGameObjectsWithTag("Watcher");
             foreach (GameObject it in watchers)
                 it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);

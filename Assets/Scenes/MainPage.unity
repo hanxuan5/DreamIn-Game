@@ -214,15 +214,15 @@ MonoBehaviour:
   m_Value: 0
   m_Options:
     m_Options:
-    - m_Text: us
+    - m_Text: US
       m_Image: {fileID: 0}
-    - m_Text: usw
+    - m_Text: USW
       m_Image: {fileID: 0}
-    - m_Text: eu
+    - m_Text: EU
       m_Image: {fileID: 0}
-    - m_Text: asia
+    - m_Text: ASIA
       m_Image: {fileID: 0}
-    - m_Text: jp
+    - m_Text: JP
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1800,7 +1800,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: us
+  m_text: US
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 08141c216841c45378beacdf21e83512, type: 2}
   m_sharedMaterial: {fileID: 797440587436487945, guid: 08141c216841c45378beacdf21e83512, type: 2}

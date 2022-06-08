@@ -115,12 +115,14 @@ public class VotePanel : MonoBehaviour
         int maxNum = 0;
         foreach (var item in itemList)
         {
-            string name = item.transform.Find("NameText").GetComponent<TMP_Text>().text;
+            GameObject nameTextObj = item.transform.Find("NameText").gameObject;
+            string name = nameTextObj.GetComponent<TMP_Text>().text;
             foreach (var data in voteData)
             {
                 if (data.Key == name)
                 {
-                    item.transform.GetChild(1).GetComponent<TMP_Text>().text = data.Value.ToString();
+                    item.transform.GetChild(1).GetComponent<TMP_Text>().text = name+": #" + data.Value.ToString();
+                    nameTextObj.SetActive(false);
                     if (data.Value > maxNum)
                     {
                         maxNum = data.Value;
@@ -138,7 +140,7 @@ public class VotePanel : MonoBehaviour
             cb.pressedColor = btn.colors.pressedColor;
             cb.disabledColor = btn.colors.disabledColor;
             cb.selectedColor = btn.colors.highlightedColor;
-            //btn.colors = cb;
+
             maxItem.GetComponent<Button>().colors = cb;
         }
 
