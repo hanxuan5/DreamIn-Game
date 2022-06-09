@@ -51,7 +51,7 @@ public class SelectPanel : MonoBehaviour
                                                                                  //当前 item 位置放在在前一个 item 下方    
                 a.GetComponent<RectTransform>().localScale = t.localScale;
                 a.GetComponent<RectTransform>().localPosition =
-                 new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-20, t.localPosition.z);
+                 new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-50, t.localPosition.z);
 
 
                 string[] text = scripts[i].name.Split(',');
@@ -71,7 +71,7 @@ public class SelectPanel : MonoBehaviour
             }
             //根据当前 item 个数更新 Content 高度 
             content.GetComponent<RectTransform>().sizeDelta =
-              new Vector2(content.GetComponent<RectTransform>().sizeDelta.x, itemList.Count * (item.GetComponent<RectTransform>().rect.height+20));
+              new Vector2(content.GetComponent<RectTransform>().sizeDelta.x, itemList.Count * (item.GetComponent<RectTransform>().rect.height+50));
         }
         else
         {
