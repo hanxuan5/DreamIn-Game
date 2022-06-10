@@ -416,7 +416,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             PlayerNameText.text = "Your name is " + localPlayer.GetComponent<playerScript>().GetPlayerName();
             PlayerIdentityText.text = "You are a " + localPlayer.GetComponent<playerScript>().GetPlayerIdentity();
             PlayerInfoText.text = localPlayer.GetComponent<playerScript>().GetPlayerInfo();
-            PlayerInfoText.transform.parent.parent.parent.parent.gameObject.SetActive(true);
+            PlayerInfoText.transform.parent.parent.parent.gameObject.SetActive(true);
         }
     }
 
