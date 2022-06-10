@@ -121,7 +121,7 @@ public class VotePanel : MonoBehaviour
             {
                 if (data.Key == name)
                 {
-                    item.transform.GetChild(1).GetComponent<TMP_Text>().text = name+": #" + data.Value.ToString();
+                    item.transform.GetChild(1).GetComponent<TMP_Text>().text = name+": " + data.Value.ToString() + " vote";
                     nameTextObj.SetActive(false);
                     if (data.Value > maxNum)
                     {
