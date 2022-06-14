@@ -30,10 +30,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     public TMP_Text PlayerInfoText;
     public TMP_Text PlayerNameText;
     public TMP_Text PlayerIdentityText;
-    public TMP_Text FinalText;//×îºó½á¹ûµÄÃæ°å
-    public GameObject TimerText;//ÏÔÊ¾Ê±¼ä
+    public TMP_Text FinalText;//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+    public GameObject TimerText;//ï¿½ï¿½Ê¾Ê±ï¿½ï¿½
 
-    private int countTime=0;//µ¹¼ÆÊ±Êý¾Ý
+    private int countTime=0;//ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
     private PhotonView GM_PhotonView;
     public GameData gameData;
     private string gameDataID;
@@ -45,7 +45,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         GM_PhotonView = GetComponent<PhotonView>();
 
-        //½øÈë³¡¾°1sºó¼ì²éÊÇ·ñÊÇÖÐÍ¾¼ÓÈë·¿¼ä£¬Èç¹ûÊÇ,Ö»ÄÜ¹ÛÕ½
+        //ï¿½ï¿½ï¿½ë³¡ï¿½ï¿½1sï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½Í¾ï¿½ï¿½ï¿½ë·¿ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½ï¿½,Ö»ï¿½Ü¹ï¿½Õ½
         Invoke("TestIfGameStart", 1);
     }
 
@@ -65,10 +65,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-#region °´Å¥µã»÷ÊÂ¼þ
+#region ï¿½ï¿½Å¥ï¿½ï¿½ï¿½ï¿½Â¼ï¿½
     public void WatchButton()
     {
-        string playerName = "Player " + (int)Random.Range(1, 7);//Ëæ»úÑ¡ÔñÒ»¸öÈËÎï
+        string playerName = "Player " + (int)Random.Range(1, 7);//ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
         localPlayer.GetComponent<playerScript>().SetPlayerTag("Watcher");
@@ -85,10 +85,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void ReadyButton()
     {
-        string playerName = "Player " + (int)Random.Range(1, 7);//Ëæ»úÑ¡ÔñÒ»¸öÈËÎï
+        string playerName = "Player " + (int)Random.Range(1, 7);//ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
-        Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//¿ªÆôÏà»ú¸úËæ
+        Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         readyButton.SetActive(false);
         watchButton.SetActive(false);
@@ -99,19 +99,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
     /// <summary>
-    /// ¿ªÊ¼ÓÎÏ·°´Å¥
-    /// ·¿Ö÷²ÅÓÐ¿ªÊ¼ÓÎÏ·°´Å¥
+    /// ï¿½ï¿½Ê¼ï¿½ï¿½Ï·ï¿½ï¿½Å¥
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¿ï¿½Ê¼ï¿½ï¿½Ï·ï¿½ï¿½Å¥
     /// </summary>
     public void StartButton()
     {
         if (gameData == null)
         {
-            Debug.Log("Ã»Ñ¡Ôñ¾ç±¾");
+            Debug.Log("Ã»Ñ¡ï¿½ï¿½ç±¾");
             return;
         }
         if(isDownloadCompelete==false)
         {
-            Debug.Log("Ã»ÓÐÏÂÔØÍê³É");
+            Debug.Log("Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
             return;
         }
         if (PhotonNetwork.IsMasterClient)
@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         startButton.SetActive(false);
         timer.SetActive(true);
-        //Ëæ»ú·ÖÅäÈËÎï
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
         List<int> selectedIndex=new List<int>();
@@ -136,10 +136,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         GM_PhotonView.RPC("RPCSetPlayerInfoPanel", RpcTarget.All);
 
-        //¿ªÊ¼¼ÆÊ±
+        //ï¿½ï¿½Ê¼ï¿½ï¿½Ê±
         StartCountTime(countTime);
 
-        //Ò»µ©ÓÎÏ·¿ªÊ¼£¬¾Í»áÉú³ÉÕâ¸öÎïÌå±íÊ¾ÓÎÏ·ÒÑ¾­¿ªÊ¼£¬Ö®ºó¼ÓÈëµÄÍæ¼ÒÖ»ÄÜ¹ÛÕ½
+        //Ò»ï¿½ï¿½ï¿½ï¿½Ï·ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ï·ï¿½Ñ¾ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½Ü¹ï¿½Õ½
         GameObject flag = PhotonNetwork.Instantiate("GameStartFlag", canvas.transform.position, Quaternion.identity, 0);
         flag.GetComponent<DataID>().SetGameDataId(gameDataID);
     }
@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 #endregion
 
-#region ÓÎÏ·Êý¾ÝÏÂÔØ
+#region ï¿½ï¿½Ï·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public void DownLoadGameData(string ID)
     {
         gameDataID = ID;
@@ -165,7 +165,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     IEnumerator GetGameData(string ID)
     {
-        string url = "http://52.71.182.98/q_game/?id=";
+        string url = "https://api.dreamin.land/q_game/?id=";
         url += ID;
 
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
@@ -179,39 +179,39 @@ public class GameManager : MonoBehaviourPunCallbacks
             else
             {
 #if UNITY_EDITOR
-                //±£´æÒ»·Ý¸±±¾Êý¾Ýµ½±¾µØ
+                //ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ý¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ï¿½
                 string savePath = "Assets/Scripts/TempData.json";
                 File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
 #endif
 
                 gameData = JsonMapper.ToObject<GameData>(webRequest.downloadHandler.text);
 
-                //¼ì²âÈËÎïÊýÁ¿ÊÇ·ñ×ã¹»£¬²»¹»µÄ»°²»ÄÜ¿ªÆôÓÎÏ·    ÕâÀïÏÈÉèÖÃÎªÐ¡ÓÚµÈÓÚ
+                //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ã¹»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½ï¿½Ü¿ï¿½ï¿½ï¿½ï¿½ï¿½Ï·    ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÎªÐ¡ï¿½Úµï¿½ï¿½ï¿½
                 int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
                 if (playerCount >= gameData.result.info.character.Count)
                 {
-                    //ÏÂÔØËùÐèµÄÌùÍ¼Êý¾Ý
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
                     for (int i = 0; i < gameData.result.info.Map.Count; i++)
                     {
                         string addr = gameData.result.info.Map[i].background;
-                        StartCoroutine(GetMapTexture(addr, i));//background???ÕâÃû×ÖÐèÒªÐÞ¸Ä
+                        StartCoroutine(GetMapTexture(addr, i));//background???ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Þ¸ï¿½
 
-                        //µØÍ¼ÖÐµÄÎïÆ·ÌùÍ¼
+                        //ï¿½ï¿½Í¼ï¿½Ðµï¿½ï¿½ï¿½Æ·ï¿½ï¿½Í¼
                         for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
                         {
                             string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
                             StartCoroutine(GetObjectTexture(objAddr, i, j));
                         }
-                        //TODO£ºÈËÎïÌùÍ¼ÏÂÔØ
+                        //TODOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½
 
                     }
-                    //¼ì²âÏÂÔØÊÇ·ñÍê³É
+                    //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½ï¿½
                     StartCoroutine(WaitForDownloadCompelete());
                     scriptScroll.gameObject.SetActive(false);
                 }
                 else
                 {
-                    Debug.Log("ÈËÊý²»¹»£¬ÇëÖØÐÂÑ¡Ôñ¾ç±¾!\n ÒªÇóÈËÊý£º"+ gameData.result.info.character.Count);
+                    Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ¡ï¿½ï¿½ç±¾!\n Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"+ gameData.result.info.character.Count);
                     scriptScroll.gameObject.SetActive(true);
                 }
             }
@@ -219,7 +219,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
     /// <summary>
-    /// »ñÈ¡µØÍ¼ÌùÍ¼
+    /// ï¿½ï¿½È¡ï¿½ï¿½Í¼ï¿½ï¿½Í¼
     /// </summary>
     /// <param name="addr"></param>
     /// <param name="index"></param>
@@ -246,7 +246,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     /// <summary>
-    /// »ñÈ¡objectµÄÌùÍ¼
+    /// ï¿½ï¿½È¡objectï¿½ï¿½ï¿½ï¿½Í¼
     /// </summary>
     /// <param name="addr"></param>
     /// <param name="index"></param>
@@ -273,7 +273,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
     /// <summary>
-    /// µÈ´ýËùÓÐÍ¼Æ¬ÏÂÔØÍê³É
+    /// ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½Í¼Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// <param name="gd"></param>
     /// <returns></returns>
@@ -284,33 +284,33 @@ public class GameManager : MonoBehaviourPunCallbacks
             bool isCompelete = true;
             foreach (GameMap gm in gameData.result.info.Map)
             {
-                //¼ì²âµØÍ¼ÌùÍ¼
+                //ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Í¼
                 if (gm.mapTexture == null) isCompelete = false;
-                //¼ì²âµØÍ¼ÎïÆ·ÌùÍ¼
+                //ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½Æ·ï¿½ï¿½Í¼
                 foreach (PlacedObject po in gm.Map_Object)
                 {
                     if (po.objTexture == null) isCompelete = false;
                 }
-                //TODO£º¼ì²âÈËÎïÌùÍ¼
+                //TODOï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼
 
             }
             if (isCompelete == true) break;
             yield return null;
         }
-        //Èç¹û·¢ÏÖ¶¼ÏÂÔØÍê³ÉÁË
-        Debug.Log("Êý¾ÝÏÂÔØÍê±Ï");
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+        Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
         isDownloadCompelete = true;
         UpdateScene();
     }
 #endregion
 
-#region ¼ÆÊ±²¿·Ö
+#region ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
     private IEnumerator IECountTime;
     void StartCountTime(int t)
     {
         if(PhotonNetwork.IsMasterClient)
         {
-            //tÊÇ·ÖÖÓ
+            //tï¿½Ç·ï¿½ï¿½ï¿½
             countTime = t * 60;
             IECountTime = CountTime();
             StartCoroutine(IECountTime);
@@ -422,38 +422,38 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void UpdateScene()
     {
-        //É¾³ý³õÊ¼³¡¾°
+        //É¾ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
         Destroy(initialScene);
         foreach (Transform child in colliders.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
 
-        //ÉèÖÃ¼ÆÊ±
+        //ï¿½ï¿½ï¿½Ã¼ï¿½Ê±
         countTime = gameData.result.info.length;
-        //³õÊ¼»¯µØÍ¼
+        //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½Í¼
         {
             GameObject map = Instantiate(mapPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
 
             map.transform.SetParent(canvas.transform);
             map.transform.localScale = new Vector3(1, 1, 1);
 
-            //ÉèÖÃµØÍ¼µÄÎ»ÖÃ
+            //ï¿½ï¿½ï¿½Ãµï¿½Í¼ï¿½ï¿½Î»ï¿½ï¿½
             float w = gameData.result.info.Map[0].mapTexture.width;
             float h = gameData.result.info.Map[0].mapTexture.height;
             map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
             map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
-            //ÉèÖÃµØÍ¼ÔÚUI²ã¼¶µÄ×îÏÂ²ã
+            //ï¿½ï¿½ï¿½Ãµï¿½Í¼ï¿½ï¿½UIï¿½ã¼¶ï¿½ï¿½ï¿½ï¿½ï¿½Â²ï¿½
             map.transform.SetSiblingIndex(0);
 
-            //ÉèÖÃsprite
+            //ï¿½ï¿½ï¿½ï¿½sprite
             map.GetComponent<Image>().sprite =  Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
         }
 
-        //³õÊ¼»¯Object
+        //ï¿½ï¿½Ê¼ï¿½ï¿½Object
         {
-            //Ä¿Ç°mapÊÇÒ»¸öÊý×é£¬ÕâÊÇÔÝÊ±·½·¨£¬Ö»»ñÈ¡map[0]
+            //Ä¿Ç°mapï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½é£¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½È¡map[0]
             for (int i = 0; i < gameData.result.info.Map[0].Map_Object.Count; i++)
             {
                 GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
@@ -471,7 +471,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
 
-        //³õÊ¼»¯Åö×²Ìå
+        //ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½×²ï¿½ï¿½
         {
             float w = gameData.result.info.Map[0].mapTexture.width / 2;
             float h = gameData.result.info.Map[0].mapTexture.height / 2;
@@ -487,13 +487,13 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
 
-        //ÉèÖÃÈËÎïÔÚUI²ã¼¶µÄ×îÉÏ²ã
+        //ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½UIï¿½ã¼¶ï¿½ï¿½ï¿½ï¿½ï¿½Ï²ï¿½
         {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject it in players)
                 it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
 
-            if (localPlayer != null)//×Ô¼ºÓ¦¸ÃÔÚ×îÉÏ²ã
+            if (localPlayer != null)//ï¿½Ô¼ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï²ï¿½
                 localPlayer.transform.SetSiblingIndex(localPlayer.transform.parent.childCount - 1);
 
             GameObject[] watchers = GameObject.FindGameObjectsWithTag("Watcher");
@@ -501,7 +501,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
         }
 
-        //ÉèÖÃ½áÎ²
+        //ï¿½ï¿½ï¿½Ã½ï¿½Î²
         FinalText.text = gameData.result.info.end;
     }
 
