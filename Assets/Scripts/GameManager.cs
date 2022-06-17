@@ -226,7 +226,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <returns></returns>
     IEnumerator GetMapTexture(string addr, int i)
     {
-        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
+        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/alpha/";
         imageLink += addr;
         imageLink = imageLink.Replace(" ", "%20");
         imageLink += ".png";
@@ -253,7 +253,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <returns></returns>
     IEnumerator GetObjectTexture(string addr, int i, int j)
     {
-        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
+        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/alpha/";
         imageLink += addr;
         imageLink = imageLink.Replace(" ", "%20");
         imageLink += ".png";
