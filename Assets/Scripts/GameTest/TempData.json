@@ -1,0 +1,1 @@
+{"status":"OK","result":{"id":63,"info":{"name":"test_singleline,1","end":"2","length":2,"character":[{"name":"123","identity":2,"background":"123"}],"Map":[{"background":"Maps/InDoor/Battle","collide_map":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;","Map_Object":[{"image_link":"Objects/Decoration/balloons_duet_down","position":"[271.2516,114.6903,0]","message":""}]}]}}}

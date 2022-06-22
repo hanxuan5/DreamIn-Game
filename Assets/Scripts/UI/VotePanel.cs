@@ -52,7 +52,7 @@ public class VotePanel : MonoBehaviour
             item.SetActive(true); 
             itemList.Add(item);
 
-            string playerName = players[i].GetComponent<playerScript>().playerName;
+            string playerName = players[i].GetComponent<PlayerScript>().playerName;
             itemList[i].transform.GetChild(0).GetComponent<TMP_Text>().text= playerName;
             voteData.Add(playerName, 0);
             i++;
@@ -68,7 +68,7 @@ public class VotePanel : MonoBehaviour
                  new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-20, t.localPosition.z);
                 a.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
-                string name= players[i].GetComponent<playerScript>().playerName;
+                string name= players[i].GetComponent<PlayerScript>().playerName;
                 a.transform.GetChild(0).GetComponent<TMP_Text>().text = name;
                 voteData.Add(name, 0);
                 i++;

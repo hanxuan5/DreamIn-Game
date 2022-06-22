@@ -1,26 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using Photon.Pun;
 using TMPro;
 
-
-public class Object : MonoBehaviour
+public class t_Object : MonoBehaviour
 {
     public GameObject tipText;
     public GameObject objectInfoPanel;
-    private PhotonView photonView;
-    private bool isInterable=false;
+    private bool isInterable = false;
     void Start()
     {
-        photonView = GetComponent<PhotonView>();
+
     }
     private void Update()
     {
-        if(isInterable)
+        if (isInterable)
         {
-            if(Input.GetKeyDown(KeyCode.X))
+            if (Input.GetKeyDown(KeyCode.X))
             {
                 objectInfoPanel.SetActive(true);
             }
@@ -28,7 +24,7 @@ public class Object : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player")&& collision.gameObject.GetComponent<PlayerScript>().photonView.IsMine)
+        if (collision.CompareTag("Player"))
         {
             tipText.SetActive(true);
             isInterable = true;
@@ -36,7 +32,7 @@ public class Object : MonoBehaviour
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.CompareTag("Player")&& collision.gameObject.GetComponent<PlayerScript>().photonView.IsMine)
+        if (collision.CompareTag("Player"))
         {
             tipText.SetActive(false);
             isInterable = false;
@@ -51,6 +47,5 @@ public class Object : MonoBehaviour
     public void SetInfoText(string info)
     {
         objectInfoPanel.GetComponentInChildren<TMP_Text>().text = info;
-        
     }
 }
