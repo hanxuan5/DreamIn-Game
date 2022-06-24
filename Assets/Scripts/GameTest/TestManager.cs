@@ -34,6 +34,7 @@ public class TestManager: MonoBehaviourPunCallbacks
     private List<GameObject> downloadObjects;
     private bool isDownloadCompelete=false;
     private int ColliderSize = 32;
+    private int infoCharacterIndex = 0;//the character who is showed in playerinfo panel
 
     public void Start()
     {
@@ -45,29 +46,30 @@ public class TestManager: MonoBehaviourPunCallbacks
 
         startButton.SetActive(true);
         scriptScroll.SetActive(true);
-    } 
-
-#region Button
-
-    public void StartButton()
-    {        
-        List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
-        GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
-        List<int> selectedIndex=new List<int>();
-        for(int i=0;i<playerObj.Length;i++)
-        {
-            int index = Random.Range(0, characters.Count);
-            while(selectedIndex.Contains(index))
-                index = Random.Range(0, characters.Count);
-
-            selectedIndex.Add(index);
-            playerObj[i].GetComponent<PlayerScript>().SetPlayerData(index);
-        }
     }
 
-#endregion
+    #region Button
+    public void NextButton()
+    {        
+        List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
+        infoCharacterIndex++;
+        if(infoCharacterIndex>=characters.Count)
+            infoCharacterIndex = 0;
 
-#region Download Data
+        SetPlayerInfoPanel(characters[infoCharacterIndex]); 
+    }
+    public void PrevButton()
+    {
+        List<GameCharacter> characters = new List<GameCharacter>(gameData.result.info.character);
+        infoCharacterIndex--;
+        if (infoCharacterIndex <0)
+            infoCharacterIndex = characters.Count-1;
+
+        SetPlayerInfoPanel(characters[infoCharacterIndex]);
+    }
+    #endregion
+
+    #region Download Data
     public void DownLoadGameData(string ID)
     {
         gameDataID = ID;
@@ -186,18 +188,29 @@ public class TestManager: MonoBehaviourPunCallbacks
     }
     #endregion
 
-    [PunRPC]
-    void RPCSetPlayerInfoPanel()
+    void SetPlayerInfoPanel(GameCharacter character)
     {
-        if(localPlayer!=null)
-        {
-            PlayerNameText.text = "Your name is " + localPlayer.GetComponent<PlayerScript>().GetPlayerName();
-            PlayerIdentityText.text = "You are a " + localPlayer.GetComponent<PlayerScript>().GetPlayerIdentity();
-            PlayerInfoText.text = localPlayer.GetComponent<PlayerScript>().GetPlayerInfo();
-            PlayerInfoText.transform.parent.parent.parent.gameObject.SetActive(true);
-        }
+        PlayerNameText.text = "Your name is " + character.name;
+        PlayerIdentityText.text = "You are a " + GetPlayerIdentity(character.identity);
+        PlayerInfoText.text = character.background;
+        //PlayerInfoText.transform.parent.parent.parent.gameObject.SetActive(true);
     }
-
+    public string GetPlayerIdentity(int identity)
+    {
+        switch (identity)
+        {
+            case 0:
+                return "Detective";
+            case 1:
+                return "Murderer";
+            case 2:
+                return "Suspect";
+            default:
+                Debug.LogError("wrong identity info!");
+                break;
+        }
+        return "";
+    }
     public void UpdateScene()
     {
         Destroy(initialScene);
@@ -262,6 +275,10 @@ public class TestManager: MonoBehaviourPunCallbacks
 
         if (localPlayer != null)
            localPlayer.transform.SetSiblingIndex(localPlayer.transform.parent.childCount - 1);
+
+        //Set PlayerInfoPanel
+        infoCharacterIndex = 0;
+        SetPlayerInfoPanel(gameData.result.info.character[infoCharacterIndex]);
 
         //Set Final Text
         FinalText.text = gameData.result.info.end;
