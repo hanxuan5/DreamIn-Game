@@ -30,10 +30,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     public TMP_Text PlayerInfoText;
     public TMP_Text PlayerNameText;
     public TMP_Text PlayerIdentityText;
-    public TMP_Text FinalText;//����������
-    public GameObject TimerText;//��ʾʱ��
+    public TMP_Text FinalText;
+    public GameObject TimerText;
 
-    private int countTime=0;//����ʱ����
+    private int countTime=0;
     private PhotonView GM_PhotonView;
     public GameData gameData;
     private string gameDataID;
@@ -45,14 +45,17 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         GM_PhotonView = GetComponent<PhotonView>();
 
-        //���볡��1s�����Ƿ�����;���뷿�䣬�����,ֻ�ܹ�ս
+        //check whether to join the game midway
         Invoke("TestIfGameStart", 1);
     }
 
+    /// <summary>
+    /// check whether to join the game midway
+    /// </summary>
     void TestIfGameStart()
     {
         GameObject testflag = GameObject.FindGameObjectWithTag("GameStartFlag");
-        if (testflag != null)
+        if (testflag != null)//if so, only watch the game after downloading game data
         {
             readyButton.SetActive(false);
             watchButton.SetActive(true);
@@ -65,14 +68,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-#region ��ť����¼�
+#region Button
     public void WatchButton()
     {
-        string playerName = "Player " + (int)Random.Range(1, 7);//���ѡ��һ������
+        string playerName = "Player " + (int)Random.Range(1, 7);
         localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
-        localPlayer.GetComponent<playerScript>().SetPlayerTag("Watcher");
-        localPlayer.GetComponent<playerScript>().SetPlayerName("Watcher");
+        localPlayer.GetComponent<PlayerScript>().SetPlayerTag("Watcher");
+        localPlayer.GetComponent<PlayerScript>().SetPlayerName("Watcher");
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);
 
         readyButton.SetActive(false);
@@ -85,10 +88,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
     public void ReadyButton()
     {
-        string playerName = "Player " + (int)Random.Range(1, 7);//���ѡ��һ������
+        string playerName = "Player " + (int)Random.Range(1, 7);
         localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
-        Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);//�����������
+        Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);
 
         readyButton.SetActive(false);
         watchButton.SetActive(false);
@@ -98,20 +101,17 @@ public class GameManager : MonoBehaviourPunCallbacks
             scriptScroll.SetActive(true);
         }
     }
-    /// <summary>
-    /// ��ʼ��Ϸ��ť
-    /// �������п�ʼ��Ϸ��ť
-    /// </summary>
+
     public void StartButton()
     {
         if (gameData == null)
         {
-            Debug.Log("ûѡ��籾");
+            Debug.Log("game data has not been download!");
             return;
         }
         if(isDownloadCompelete==false)
         {
-            Debug.Log("û���������");
+            Debug.Log("game data downloading");
             return;
         }
         if (PhotonNetwork.IsMasterClient)
@@ -120,7 +120,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         startButton.SetActive(false);
         timer.SetActive(true);
-        //�����������
+        
         List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
         List<int> selectedIndex=new List<int>();
@@ -131,15 +131,15 @@ public class GameManager : MonoBehaviourPunCallbacks
                 index = Random.Range(0, characters.Count);
 
             selectedIndex.Add(index);
-            playerObj[i].GetComponent<playerScript>().SetPlayerData(index);
+            playerObj[i].GetComponent<PlayerScript>().SetPlayerData(index);
         }
 
         GM_PhotonView.RPC("RPCSetPlayerInfoPanel", RpcTarget.All);
 
-        //��ʼ��ʱ
+        //start count time
         StartCountTime(countTime);
 
-        //һ����Ϸ��ʼ���ͻ�������������ʾ��Ϸ�Ѿ���ʼ��֮���������ֻ�ܹ�ս
+        //instantiate GameStartFlag
         GameObject flag = PhotonNetwork.Instantiate("GameStartFlag", canvas.transform.position, Quaternion.identity, 0);
         flag.GetComponent<DataID>().SetGameDataId(gameDataID);
     }
@@ -151,7 +151,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 #endregion
 
-#region ��Ϸ��������
+#region Download Data
     public void DownLoadGameData(string ID)
     {
         gameDataID = ID;
@@ -179,51 +179,42 @@ public class GameManager : MonoBehaviourPunCallbacks
             else
             {
 #if UNITY_EDITOR
-                //����һ�ݸ������ݵ�����
+                //Save a gamedata backup for debug
                 string savePath = "Assets/Scripts/TempData.json";
                 File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
 #endif
 
                 gameData = JsonMapper.ToObject<GameData>(webRequest.downloadHandler.text);
 
-                //������������Ƿ��㹻�������Ļ����ܿ�����Ϸ    ����������ΪС�ڵ���
                 int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
                 if (playerCount >= gameData.result.info.character.Count)
                 {
-                    //�����������ͼ����
                     for (int i = 0; i < gameData.result.info.Map.Count; i++)
                     {
                         string addr = gameData.result.info.Map[i].background;
-                        StartCoroutine(GetMapTexture(addr, i));//background???��������Ҫ�޸�
+                        StartCoroutine(GetMapTexture(addr, i));
 
-                        //��ͼ�е���Ʒ��ͼ
                         for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
                         {
                             string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
                             StartCoroutine(GetObjectTexture(objAddr, i, j));
                         }
-                        //TODO��������ͼ����
+
 
                     }
-                    //��������Ƿ����
                     StartCoroutine(WaitForDownloadCompelete());
                     scriptScroll.gameObject.SetActive(false);
                 }
                 else
                 {
-                    Debug.Log("����������������ѡ��籾!\n Ҫ��������"+ gameData.result.info.character.Count);
+                    Debug.Log("not enough player for this script!\n "+ gameData.result.info.character.Count);
                     scriptScroll.gameObject.SetActive(true);
                 }
             }
         }
 
     }
-    /// <summary>
-    /// ��ȡ��ͼ��ͼ
-    /// </summary>
-    /// <param name="addr"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
+
     IEnumerator GetMapTexture(string addr, int i)
     {
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
@@ -245,12 +236,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    /// <summary>
-    /// ��ȡobject����ͼ
-    /// </summary>
-    /// <param name="addr"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
     IEnumerator GetObjectTexture(string addr, int i, int j)
     {
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
@@ -272,11 +257,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             gameData.result.info.Map[i].Map_Object[j].objTexture = t;
         }
     }
-    /// <summary>
-    /// �ȴ�����ͼƬ�������
-    /// </summary>
-    /// <param name="gd"></param>
-    /// <returns></returns>
     IEnumerator WaitForDownloadCompelete()
     {
         while (true)
@@ -284,33 +264,28 @@ public class GameManager : MonoBehaviourPunCallbacks
             bool isCompelete = true;
             foreach (GameMap gm in gameData.result.info.Map)
             {
-                //����ͼ��ͼ
                 if (gm.mapTexture == null) isCompelete = false;
-                //����ͼ��Ʒ��ͼ
                 foreach (PlacedObject po in gm.Map_Object)
                 {
                     if (po.objTexture == null) isCompelete = false;
                 }
-                //TODO�����������ͼ
 
             }
             if (isCompelete == true) break;
             yield return null;
         }
-        //������ֶ����������
-        Debug.Log("�����������");
+        Debug.Log("Download Compelete!");
         isDownloadCompelete = true;
         UpdateScene();
     }
 #endregion
 
-#region ��ʱ����
+#region Count Time
     private IEnumerator IECountTime;
     void StartCountTime(int t)
     {
         if(PhotonNetwork.IsMasterClient)
         {
-            //t�Ƿ���
             countTime = t * 60;
             IECountTime = CountTime();
             StartCoroutine(IECountTime);
@@ -413,47 +388,42 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         if(localPlayer!=null)
         {
-            PlayerNameText.text = "Your name is " + localPlayer.GetComponent<playerScript>().GetPlayerName();
-            PlayerIdentityText.text = "You are a " + localPlayer.GetComponent<playerScript>().GetPlayerIdentity();
-            PlayerInfoText.text = localPlayer.GetComponent<playerScript>().GetPlayerInfo();
+            PlayerNameText.text = "Your name is " + localPlayer.GetComponent<PlayerScript>().GetPlayerName();
+            PlayerIdentityText.text = "You are a " + localPlayer.GetComponent<PlayerScript>().GetPlayerIdentity();
+            PlayerInfoText.text = localPlayer.GetComponent<PlayerScript>().GetPlayerInfo();
             PlayerInfoText.transform.parent.parent.parent.gameObject.SetActive(true);
         }
     }
 
     public void UpdateScene()
     {
-        //ɾ����ʼ����
         Destroy(initialScene);
         foreach (Transform child in colliders.transform)
         {
             GameObject.Destroy(child.gameObject);
         }
 
-        //���ü�ʱ
         countTime = gameData.result.info.length;
-        //��ʼ����ͼ
+
+        //update map
         {
             GameObject map = Instantiate(mapPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
 
             map.transform.SetParent(canvas.transform);
             map.transform.localScale = new Vector3(1, 1, 1);
 
-            //���õ�ͼ��λ��
             float w = gameData.result.info.Map[0].mapTexture.width;
             float h = gameData.result.info.Map[0].mapTexture.height;
             map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
             map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
 
-            //���õ�ͼ��UI�㼶�����²�
             map.transform.SetSiblingIndex(0);
 
-            //����sprite
             map.GetComponent<Image>().sprite =  Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
         }
 
-        //��ʼ��Object
+        //update object
         {
-            //Ŀǰmap��һ�����飬������ʱ������ֻ��ȡmap[0]
             for (int i = 0; i < gameData.result.info.Map[0].Map_Object.Count; i++)
             {
                 GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
@@ -471,7 +441,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
 
-        //��ʼ����ײ��
+        //update collision
         {
             float w = gameData.result.info.Map[0].mapTexture.width / 2;
             float h = gameData.result.info.Map[0].mapTexture.height / 2;
@@ -487,13 +457,13 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
         }
 
-        //����������UI�㼶�����ϲ�
+        //set Player
         {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
             foreach (GameObject it in players)
                 it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
 
-            if (localPlayer != null)//�Լ�Ӧ�������ϲ�
+            if (localPlayer != null)
                 localPlayer.transform.SetSiblingIndex(localPlayer.transform.parent.childCount - 1);
 
             GameObject[] watchers = GameObject.FindGameObjectsWithTag("Watcher");
@@ -501,7 +471,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
         }
 
-        //���ý�β
+        //Set Final Text
         FinalText.text = gameData.result.info.end;
     }
 

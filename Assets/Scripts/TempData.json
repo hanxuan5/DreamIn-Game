@@ -1,1 +1,1 @@
-{"status":"OK","result":{"id":71,"info":{"name":"DEMO,1","end":"没错，你就是凶手。但身为凶手的你无愧于这个世界上任何人。即使被永远误解，这是你该做的事情。你会是他们所有学生见过的，最勇敢的人。","length":30,"character":[],"Map":[]}}}
+{"status":"OK","result":{"id":62,"info":{"name":"TEST ONE Player,1","end":"end","length":2,"character":[{"name":"a","identity":2,"background":"a"}],"Map":[{"background":"Maps/InDoor/Battle","collide_map":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;","Map_Object":[{"image_link":"Objects/Decoration/balloons_heart_down","position":"[-31.25828,60.66225,0]","message":"a"}]}]}}}

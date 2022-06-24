@@ -22,8 +22,5 @@ public class ScrollIndexCallback1 : MonoBehaviour
     {
         //Get data from backend with gameID
         GameObject.Find("GameManager").GetComponent<GameManager>().DownLoadGameData(gameID);
-        //this.transform.parent.parent.gameObject.SetActive(false);
     }
-
-
 }
