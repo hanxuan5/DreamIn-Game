@@ -9,22 +9,9 @@ public class PlayerMove : MonoBehaviourPun
     // Speed of movement
     public float moveSpeed = 3;
 
-    //public Text nameText;
-    // Start is called before the first frame update
-    /*
-    void Start()
-    {
-        if (photonView.IsMine)
-        {
-            nameText.text = PhotonNetwork.NickName;
-        } else
-        {
-            nameText.text = photonView.Owner.NickName;
-        }
-    }
-    */
-
-    // Update is called once per frame
+    /// <summary>
+    /// Update the movement of player
+    /// </summary>
     void Update()
     {
         if (!photonView.IsMine && PhotonNetwork.IsConnected)
