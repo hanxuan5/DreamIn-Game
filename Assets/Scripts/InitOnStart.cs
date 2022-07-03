@@ -79,8 +79,8 @@ namespace Demo
                 }
                 else
                 {
-                    //保存一份副本数据到本地
-                    string savePath = "Assets/Scripts/ScriptData.json";
+                    //Save a copy to local
+                    string savePath = "Assets/JsonData/ScriptData.json";
                     File.WriteAllText(savePath, webRequest.downloadHandler.text);
 
                     sj = JsonMapper.ToObject<ScriptsJsonData>(webRequest.downloadHandler.text);

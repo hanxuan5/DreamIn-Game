@@ -19,11 +19,11 @@ public class SelectPanel : MonoBehaviour
     public void CreateScriptItem(List<ScriptInfo> scripts)
     {
         List<GameObject> itemList = new List<GameObject>();
-        //在 Content 里生成 _count 个item
+        //Generate _ Count items in content
         if (scripts.Count > 0)
         {
             int i = 0;
-            item.SetActive(true); //第一个item实例已经放在列表第一个位置，直接激活
+            item.SetActive(true); //Active the first one
             itemList.Add(item);
 
             string[] scriptText = scripts[i].name.Split(',');
@@ -39,16 +39,16 @@ public class SelectPanel : MonoBehaviour
             else
                 itemList[i].transform.GetChild(0).GetComponent<TMP_Text>().text = scriptText[0];
 
-            itemList[i].GetComponent<ScrollIndexCallback1>().gameID = scripts[i].id.ToString();
+            itemList[i].GetComponent<ScriptItem>().gameID = scripts[i].id.ToString();
             i++;
 
             while (i < scripts.Count)
             {
                 GameObject a = GameObject.Instantiate(item) as GameObject;
-                a.transform.parent = content.transform; //设置为 Content 的子对象
+                a.transform.parent = content.transform; //Set as a Content's child
                 itemList.Add(a);
-                RectTransform t = itemList[i - 1].GetComponent<RectTransform>(); //获取前一个 item 的位置    
-                                                                                 //当前 item 位置放在在前一个 item 下方    
+                RectTransform t = itemList[i - 1].GetComponent<RectTransform>(); 
+
                 a.GetComponent<RectTransform>().localScale = t.localScale;
                 a.GetComponent<RectTransform>().localPosition =
                  new Vector3(t.localPosition.x, t.localPosition.y - t.rect.height-50, t.localPosition.z);
@@ -66,10 +66,10 @@ public class SelectPanel : MonoBehaviour
                 else
                     a.transform.GetChild(0).GetComponent<TMP_Text>().text = text[0];
 
-                a.GetComponent<ScrollIndexCallback1>().gameID = scripts[i].id.ToString();
+                a.GetComponent<ScriptItem>().gameID = scripts[i].id.ToString();
                 i++;
             }
-            //根据当前 item 个数更新 Content 高度 
+            //Update content height
             content.GetComponent<RectTransform>().sizeDelta =
               new Vector2(content.GetComponent<RectTransform>().sizeDelta.x, itemList.Count * (item.GetComponent<RectTransform>().rect.height+50));
         }
@@ -93,7 +93,6 @@ public class SelectPanel : MonoBehaviour
             else
             {
                 sj = JsonMapper.ToObject<ScriptsJsonData>(webRequest.downloadHandler.text);
-
                 CreateScriptItem(sj.result.Info);
             }
         }

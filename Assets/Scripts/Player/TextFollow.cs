@@ -9,20 +9,16 @@ public class TextFollow : MonoBehaviour
 
     public PhotonView photonView;
 
-    // 需要锁定的坐标（可以实时生效）
+    // Axis that need to be locked (can take effect in real time)
     public bool freazeX, freazeY;
 
-    // 跟随的平滑时间（类似于滞后时间）
     public float smoothTime = 0.05F;
     private float xVelocity, yVelocity = 0.0F;
 
-    // 跟随的偏移量
     private Vector3 offset;
 
-    // 全局缓存的位置变量
     private Vector3 oldPosition;
 
-    // 记录初始位置
     private Vector3 startPosition;
 
     void Start()
@@ -78,7 +74,7 @@ public class TextFollow : MonoBehaviour
     }
 
     /// <summary>
-    /// 用于重新开始游戏时直接重置相机位置
+    /// Reset camera location
     /// </summary>
     public void ResetPosition()
     {

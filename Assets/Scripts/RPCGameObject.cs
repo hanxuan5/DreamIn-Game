@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
 
+/// <summary>
+/// All game objects that need to be generated on GameCanvas must add this script to prevent scale problems
+/// </summary>
 public class RPCGameObject : MonoBehaviour
 {
-    //所有需要生成在GameCanvas上的游戏物体必须挂载此类以防止比例问题
     PhotonView photonView;
     public void Awake()
     {

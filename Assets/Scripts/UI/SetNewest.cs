@@ -6,7 +6,7 @@ public class SetNewest : MonoBehaviour
 {
     void Start()
     {
-        transform.SetSiblingIndex(transform.parent.childCount - 1);//设置该UI在UI层级的最上层
+        transform.SetSiblingIndex(transform.parent.childCount - 1);
     }
 
 }

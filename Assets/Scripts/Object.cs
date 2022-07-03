@@ -10,12 +10,7 @@ public class Object : MonoBehaviour
 {
     public GameObject tipText;
     public GameObject objectInfoPanel;
-    private PhotonView photonView;
     private bool isInterable=false;
-    void Start()
-    {
-        photonView = GetComponent<PhotonView>();
-    }
     private void Update()
     {
         if(isInterable)
