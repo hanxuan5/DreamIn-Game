@@ -6,14 +6,17 @@ using UnityEngine.UI;
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// Add in Player to controll animations, move, data sync
+/// </summary>
 public class PlayerScript : MonoBehaviourPun
 {
     public TMP_Text nameText;
     public GameObject nameTextObj;
 
     internal string playerName;
-    private int playerIndex;//玩家在character数组中的编号
-    private int playerIdentity;//玩家的身份
+    private int playerIndex;
+    private int playerIdentity;
     private GameData gameData;
 
     private Rigidbody2D body;
@@ -25,7 +28,7 @@ public class PlayerScript : MonoBehaviourPun
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
 
-        //生成玩家名字面板并让其跟踪玩家
+        //Intiate playername Panel and let it follow the player
         GameObject t = GameObject.Instantiate(nameTextObj, transform.position + new Vector3(0, 40, 0), Quaternion.identity);
         GameObject canvas = GameObject.Find("GameCanvas");
         t.transform.SetParent(canvas.transform);
@@ -33,6 +36,9 @@ public class PlayerScript : MonoBehaviourPun
         t.GetComponent<TextFollow>().SetTarget(gameObject);
         nameText = t.GetComponent<TMP_Text>();
     }
+    /// <summary>
+    /// player aniamtions control
+    /// </summary>
     private void FixedUpdate()
     {
         if (!photonView.IsMine && PhotonNetwork.IsConnected)
@@ -82,7 +88,7 @@ public class PlayerScript : MonoBehaviourPun
         }
     }
     /// <summary>
-    /// 根据信息配置player
+    /// Configure the player according to game data
     /// </summary>
     /// <param name="characters"></param>
     /// <param name="index"></param>

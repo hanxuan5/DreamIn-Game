@@ -8,7 +8,9 @@ using System.IO;
 using System.Text.RegularExpressions;
 using LitJson;
 using TMPro;
-
+/// <summary>
+/// TestManager use for GameTest Scene
+/// </summary>
 public class TestManager: MonoBehaviourPunCallbacks
 {
     public GameObject startButton;

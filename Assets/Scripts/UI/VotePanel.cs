@@ -18,7 +18,7 @@ public class VotePanel : MonoBehaviour
     private int countTime;
 
     [SerializeField]
-    private int voteNum;//记录已经投票的人数
+    private int voteNum;//Record the number of people who have voted
     private List<GameObject> itemList;
     Dictionary<string, int> voteData;
     
@@ -85,7 +85,7 @@ public class VotePanel : MonoBehaviour
 
     public void VoteThisPlayer(Button btn)
     {
-        {//选中该玩家，改变其颜色
+        {//Select the player and change the button color
             ColorBlock cb = btn.colors;
             cb.highlightedColor = btn.colors.highlightedColor;
             cb.pressedColor = btn.colors.pressedColor;
@@ -131,7 +131,7 @@ public class VotePanel : MonoBehaviour
                 }
             }
         }
-        if (maxItem != null)//高亮最大票数的人
+        if (maxItem != null)//Highlight the player with the largest number of votes
         {
             Button btn = maxItem.GetComponent<Button>();
             ColorBlock cb = btn.colors;
@@ -165,24 +165,8 @@ public class VotePanel : MonoBehaviour
         voteData[name]++;
     }
 
-    ///// <summary>
-    ///// 使用photon传输流同步数据
-    ///// </summary>
-    ///// <param name="stream"></param>
-    ///// <param name="info"></param>
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    //if (stream.IsWriting == true)
-    //    //{
-    //    //    stream.SendNext(voteData);
-    //    //}
-    //    //else
-    //    //{
-    //    //    voteData = (Dictionary<string,int>)stream.ReceiveNext();
-    //    //}
-    //}
 
-    #region 投票板计时
+    #region Voting board timing
     IEnumerator IECountTime;
     void StartCountTime(float t)
     {

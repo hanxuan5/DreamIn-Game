@@ -8,10 +8,6 @@ public class t_Object : MonoBehaviour
     public GameObject tipText;
     public GameObject objectInfoPanel;
     private bool isInterable = false;
-    void Start()
-    {
-
-    }
     private void Update()
     {
         if (isInterable)
