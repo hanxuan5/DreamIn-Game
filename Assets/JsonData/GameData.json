@@ -1,2 +1,1 @@
-{"status":"OK","result":{"id":64,"info":{"name":"test_muliline,1","end":"123","length":2,"character":[{"name":"123","identity":2,"background":"123
-123"}],"Map":[{"background":"Maps/InDoor/Battle","collide_map":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;","Map_Object":[]}]}}}
+{"status":"OK","result":{"id":62,"info":{"name":"TEST ONE Player,1","end":"end","length":2,"character":[{"name":"a","identity":2,"background":"a"}],"Map":[{"background":"Maps/InDoor/Battle","collide_map":";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;","Map_Object":[{"image_link":"Objects/Decoration/balloons_heart_down","position":"[-31.25828,60.66225,0]","message":"a"}]}]}}}

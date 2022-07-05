@@ -9,10 +9,12 @@ using TMPro;
 /// <summary>
 /// Add in Player to controll animations, move, data sync
 /// </summary>
-public class PlayerScript : MonoBehaviourPun
+public class PlayerScript : MonoBehaviour
 {
     public TMP_Text nameText;
     public GameObject nameTextObj;
+
+    public PhotonView photonView;
 
     internal string playerName;
     private int playerIndex;
@@ -27,6 +29,7 @@ public class PlayerScript : MonoBehaviourPun
     {
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
+        photonView = GetComponent<PhotonView>();
 
         //Intiate playername Panel and let it follow the player
         GameObject t = GameObject.Instantiate(nameTextObj, transform.position + new Vector3(0, 40, 0), Quaternion.identity);
@@ -48,7 +51,7 @@ public class PlayerScript : MonoBehaviourPun
         float v = Input.GetAxisRaw("Vertical");
 
         Vector2 dir = new Vector2(h, v);
-        body.velocity =dir*runSpeed;
+        body.velocity = dir * runSpeed;
 
         if (v > 0)
         {
@@ -92,9 +95,9 @@ public class PlayerScript : MonoBehaviourPun
     /// </summary>
     /// <param name="characters"></param>
     /// <param name="index"></param>
-    public void SetPlayerData( int index)
+    public void SetPlayerData(int index)
     {
-        photonView.RPC("RPCSetPlayerData", RpcTarget.All,  index);
+        photonView.RPC("RPCSetPlayerData", RpcTarget.All, index);
     }
     [PunRPC]
     public void RPCSetPlayerData(int index)
