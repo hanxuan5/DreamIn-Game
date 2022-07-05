@@ -402,12 +402,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5704281589670969547}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: be730c23426c2c44d9ca574eccc9eafa, type: 3}
+  m_Script: {fileID: 11500000, guid: 6994faa4ec9a7124e9312cfb42e20f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nameText: {fileID: 0}
+  nameText: {fileID: 2083968844730446149}
   nameTextObj: {fileID: 1350979151766372041, guid: 313b2de9ffc303e4fa4ea7ac2c66dca3, type: 3}
-  runSpeed: 200
+  photonView: {fileID: 0}
+  runSpeed: 20
 --- !u!114 &5898787192002990119
 MonoBehaviour:
   m_ObjectHideFlags: 0
