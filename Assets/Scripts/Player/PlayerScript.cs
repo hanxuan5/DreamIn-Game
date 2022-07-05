@@ -14,7 +14,7 @@ public class PlayerScript : MonoBehaviour
     public TMP_Text nameText;
     public GameObject nameTextObj;
 
-    public PhotonView photonView;
+    internal PhotonView photonView;
 
     internal string playerName;
     private int playerIndex;
@@ -22,7 +22,7 @@ public class PlayerScript : MonoBehaviour
     private GameData gameData;
 
     private Rigidbody2D body;
-    public float runSpeed = 20.0f;
+    private float runSpeed = 200.0f;
 
     private Animator animator;
     void Awake()
