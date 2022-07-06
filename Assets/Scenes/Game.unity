@@ -494,6 +494,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BlueButton
       objectReference: {fileID: 0}
+    - target: {fileID: 6967497742072543806, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7536593310070824580, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_text
       value: Close
@@ -3181,8 +3185,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98d585c1b26082f448b67d01f919009e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gameID: 
-  numOfPlayer: 0
 --- !u!114 &1034008085
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4885,7 +4887,7 @@ GameObject:
   - component: {fileID: 1266353767}
   - component: {fileID: 1266353770}
   m_Layer: 5
-  m_Name: FinalPanel
+  m_Name: EndPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5354,7 +5356,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'This is Final Text
+  m_text: 'This is the End Text
 
 '
   m_isRightToLeft: 0
@@ -8157,7 +8159,7 @@ MonoBehaviour:
   startButton: {fileID: 1383976631}
   finishButton: {fileID: 1672391396}
   scriptScroll: {fileID: 1358060396}
-  canvas: {fileID: 796135693}
+  gameCanvas: {fileID: 796135693}
   objects: {fileID: 808633981}
   colliders: {fileID: 781080985}
   objectPrefab: {fileID: 8558312213418970229, guid: aa8f93b75c258594d9c31ac297ec7420, type: 3}
@@ -8166,12 +8168,12 @@ MonoBehaviour:
   votePanel: {fileID: 1145779654}
   objectInfoPanel: {fileID: 2026988955}
   timer: {fileID: 523346552}
-  initialScene: {fileID: 284567284}
+  currentMap: {fileID: 284567284}
   PlayerInfoText: {fileID: 1959517019}
   PlayerNameText: {fileID: 1291564963}
   PlayerIdentityText: {fileID: 526004369}
-  FinalText: {fileID: 1309681806}
-  TimerText: {fileID: 1194231368}
+  EndText: {fileID: 1309681806}
+  TimerText: {fileID: 1194231370}
 --- !u!4 &1976860448
 Transform:
   m_ObjectHideFlags: 0

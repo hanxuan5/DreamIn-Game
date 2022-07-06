@@ -283,7 +283,7 @@ public class TestManager: MonoBehaviourPunCallbacks
         SetPlayerInfoPanel(gameData.result.info.character[infoCharacterIndex]);
 
         //Set Final Text
-        FinalText.text = gameData.result.info.end;
+        //FinalText.text = gameData.result.info.end;
     }
 
 }

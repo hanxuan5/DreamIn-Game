@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject startButton;
     public GameObject finishButton;
     public GameObject scriptScroll;
-    public GameObject canvas;
+    public GameObject gameCanvas;
     public GameObject objects;
     public GameObject colliders;
     public GameObject objectPrefab;
@@ -25,13 +25,13 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject votePanel;
     public GameObject objectInfoPanel;
     public GameObject timer;
-    public GameObject initialScene;
+    public GameObject currentMap;
 
     public TMP_Text PlayerInfoText;
     public TMP_Text PlayerNameText;
     public TMP_Text PlayerIdentityText;
-    public TMP_Text FinalText;
-    public GameObject TimerText;
+    public TMP_Text EndText;
+    public TMP_Text TimerText;
 
     private int countTime=0;
     private PhotonView GM_PhotonView;
@@ -40,6 +40,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private GameObject localPlayer;
     private bool isDownloadCompelete=false;
     private int ColliderSize = 32;
+    private int mapIndex = 0;
 
     public void Start()
     {
@@ -82,66 +83,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void UpdateScene()
     {
-        Destroy(initialScene);
-        foreach (Transform child in colliders.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
-        countTime = gameData.result.info.length;
-
-        //update map
-        {
-            GameObject map = Instantiate(mapPrefab, new Vector2(0, 0), Quaternion.identity, canvas.transform);
-
-            map.transform.SetParent(canvas.transform);
-            map.transform.localScale = new Vector3(1, 1, 1);
-
-            float w = gameData.result.info.Map[0].mapTexture.width;
-            float h = gameData.result.info.Map[0].mapTexture.height;
-            map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
-            map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-
-            map.transform.SetSiblingIndex(0);
-
-            map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
-        }
-
-        //update object
-        {
-            for (int i = 0; i < gameData.result.info.Map[0].Map_Object.Count; i++)
-            {
-                GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
-
-                obj.transform.SetParent(canvas.transform);
-                obj.transform.localScale = new Vector3(1, 1, 1);
-
-                float w = gameData.result.info.Map[0].Map_Object[i].objTexture.width;
-                float h = gameData.result.info.Map[0].Map_Object[i].objTexture.height;
-                obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
-                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[0].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
-                obj.GetComponent<Object>().objectInfoPanel = objectInfoPanel;
-                obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[0].Map_Object[i].message);
-                obj.transform.localPosition = gameData.result.info.Map[0].Map_Object[i].GetPosition();
-            }
-        }
-
-        //update collision
-        {
-            float w = gameData.result.info.Map[0].mapTexture.width / 2;
-            float h = gameData.result.info.Map[0].mapTexture.height / 2;
-            string[] rows = gameData.result.info.Map[0].collide_map.Split(';');
-            for (int i = 0; i < rows.Length; i++)
-            {
-                string[] cols = rows[i].Split(',');
-                for (int j = 0; j < cols.Length - 1; j++)
-                {
-                    GameObject obj = Instantiate(colliderPrefab, new Vector2(0, 0), Quaternion.identity, colliders.transform);
-                    obj.transform.localPosition = new Vector3(-w + int.Parse(cols[j]) * ColliderSize + ColliderSize / 2, h - i * ColliderSize - ColliderSize / 2, 0);
-                }
-            }
-        }
-
         //set Player
         {
             GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
@@ -156,15 +97,124 @@ public class GameManager : MonoBehaviourPunCallbacks
                 it.transform.SetSiblingIndex(it.transform.parent.childCount - 1);
         }
 
+        //Set Map
+        {
+            mapIndex = 0;
+            UpdateMap(mapIndex);
+            mapIndex++;
+        }
+
+        if(PhotonNetwork.IsMasterClient)
+            startButton.SetActive(true);
+    }
+
+    void UpdateMap(int index)
+    {
+        //delete previous map
+        if(currentMap!=null)
+        {
+            Destroy(currentMap);
+            foreach (Transform child in colliders.transform)
+                GameObject.Destroy(child.gameObject);
+
+            foreach (Transform child in objects.transform)
+                GameObject.Destroy(child.gameObject);
+        }
+
+        //update map
+        {
+            GameObject map = Instantiate(mapPrefab, new Vector2(0, 0), Quaternion.identity, gameCanvas.transform);
+
+            map.transform.SetParent(gameCanvas.transform);
+            map.transform.localScale = new Vector3(1, 1, 1);
+
+            float w = gameData.result.info.Map[index].mapTexture.width;
+            float h = gameData.result.info.Map[index].mapTexture.height;
+
+            map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
+            map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+            map.transform.SetSiblingIndex(0);
+            map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+
+            currentMap = map;
+        }
+
+        //update map object
+        {
+            for (int i = 0; i < gameData.result.info.Map[index].Map_Object.Count; i++)
+            {
+                GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
+
+                obj.transform.SetParent(gameCanvas.transform);
+                obj.transform.localScale = new Vector3(1, 1, 1);
+
+                float w = gameData.result.info.Map[index].Map_Object[i].objTexture.width;
+                float h = gameData.result.info.Map[index].Map_Object[i].objTexture.height;
+                obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
+                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+                obj.GetComponent<Object>().objectInfoPanel = objectInfoPanel;
+                obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[index].Map_Object[i].message);
+                obj.transform.localPosition = gameData.result.info.Map[index].Map_Object[i].GetPosition();
+
+                obj.transform.SetParent(objects.transform);
+            }
+        }
+
+        //update collision
+        {
+            float w = gameData.result.info.Map[index].mapTexture.width / 2;
+            float h = gameData.result.info.Map[index].mapTexture.height / 2;
+            string[] rows = gameData.result.info.Map[index].collide_map.Split(';');
+            for (int i = 0; i < rows.Length; i++)
+            {
+                string[] cols = rows[i].Split(',');
+                for (int j = 0; j < cols.Length - 1; j++)
+                {
+                    GameObject obj = Instantiate(colliderPrefab, new Vector2(0, 0), Quaternion.identity, colliders.transform);
+                    obj.transform.localPosition = new Vector3(-w + int.Parse(cols[j]) * ColliderSize + ColliderSize / 2, h - i * ColliderSize - ColliderSize / 2, 0);
+
+                    obj.transform.SetParent(colliders.transform);
+                }
+            }
+        }
+
+        //set count time
+        countTime = gameData.result.info.Map[index].duration;
+
         //Set Final Text
-        FinalText.text = gameData.result.info.end;
+        EndText.text = gameData.result.info.Map[index].end;
+    }
+
+    /// <summary>
+    /// Call this method when the countdown is over or the finish button is clicked
+    /// </summary>
+    void LevelEnd()
+    {
+        //if this is the last map, show vote panel
+        if (mapIndex == gameData.result.info.Map.Count)
+        {
+            GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
+        }
+        else
+        {
+            EndText.transform.parent.parent.gameObject.SetActive(true);
+            UpdateMap(mapIndex);
+            mapIndex++;
+            StartCountTime(countTime);//restart count time
+
+            GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
+            foreach(GameObject player in playerObj)
+            {
+                player.transform.localPosition = Vector2.zero;
+            }
+        }
     }
 
     #region Button
     public void WatchButton()
     {
         string playerName = "Player " + (int)Random.Range(1, 7);
-        localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
+        localPlayer = PhotonNetwork.Instantiate(playerName, gameCanvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
         localPlayer.GetComponent<PlayerScript>().SetPlayerTag("Watcher");
         localPlayer.GetComponent<PlayerScript>().SetPlayerName("Watcher");
@@ -181,7 +231,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void ReadyButton()
     {
         string playerName = "Player " + (int)Random.Range(1, 7);
-        localPlayer = PhotonNetwork.Instantiate(playerName, canvas.transform.position, Quaternion.identity, 0);
+        localPlayer = PhotonNetwork.Instantiate(playerName, gameCanvas.transform.position, Quaternion.identity, 0);
         localPlayer.transform.localPosition = new Vector2(0, 0);
         Camera.main.GetComponent<CameraFollow>().SetTarget(localPlayer);
 
@@ -189,7 +239,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         watchButton.SetActive(false);
         if (PhotonNetwork.IsMasterClient)
         {
-            startButton.SetActive(true);
+            //startButton.SetActive(true);
             scriptScroll.SetActive(true);
         }
     }
@@ -215,6 +265,13 @@ public class GameManager : MonoBehaviourPunCallbacks
         
         List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
+
+        if (playerObj.Length > characters.Count)
+        {
+            Debug.LogError("too many players!");
+            return;
+        }
+
         List<int> selectedIndex=new List<int>();
         for(int i=0;i<playerObj.Length;i++)
         {
@@ -228,12 +285,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         GM_PhotonView.RPC("RPCSetPlayerInfoPanel", RpcTarget.All);
 
+        //instantiate GameStartFlag
+        GameObject flag = PhotonNetwork.Instantiate("GameStartFlag", gameCanvas.transform.position, Quaternion.identity, 0);
+        flag.GetComponent<DataID>().SetGameDataId(gameDataID);
+
         //start count time
         StartCountTime(countTime);
-
-        //instantiate GameStartFlag
-        GameObject flag = PhotonNetwork.Instantiate("GameStartFlag", canvas.transform.position, Quaternion.identity, 0);
-        flag.GetComponent<DataID>().SetGameDataId(gameDataID);
     }
 
     public void EndButton()
@@ -241,13 +298,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         EndCountTime();
     }
 
-#endregion
+    #endregion
 
-#region Download Data
-    string GetGameDataLink(string ID)
-    {
-        return "https://api.dreamin.land/q_game/?id="+ID;
-    }
+ #region Download Data
+
     string GetImageLink(string addr)
     {
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
@@ -259,18 +313,51 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void DownLoadGameData(string ID)
     {
         gameDataID = ID;
-        GM_PhotonView.RPC("RPCDownloadGameData",RpcTarget.All,ID);
+        GM_PhotonView.RPC("RPCDownloadGameData", RpcTarget.All, ID);
+    }
+    string GetGameDataLink(string ID)
+    {
+        return "https://api.dreamin.land/q_game/?id="+ID;
     }
 
     [PunRPC]
     void RPCDownloadGameData(string ID)
     {
-        StartCoroutine(GetGameData(ID));
+        //StartCoroutine(GetGameData(ID));
+        TestGameData();
+    }
+    void TestGameData()
+    {
+        //test new data format
+        string testPath = "Assets/JsonData/TestJson.json";
+        gameData = JsonMapper.ToObject<GameData>(File.ReadAllText(testPath));
+
+        int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
+        if (playerCount >= gameData.result.info.playes_num)
+        {
+            for (int i = 0; i < gameData.result.info.Map.Count; i++)
+            {
+                string addr = gameData.result.info.Map[i].background;
+                StartCoroutine(GetMapTexture(addr, i));
+
+                for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
+                {
+                    string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
+                    StartCoroutine(GetObjectTexture(objAddr, i, j));
+                }
+            }
+            StartCoroutine(WaitForDownloadCompelete());
+            scriptScroll.gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("not enough player for this script!\n " + gameData.result.info.character.Count);
+            scriptScroll.gameObject.SetActive(true);
+        }
     }
     IEnumerator GetGameData(string ID)
     {
         string url = GetGameDataLink(ID);
-
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();
@@ -290,7 +377,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 gameData = JsonMapper.ToObject<GameData>(webRequest.downloadHandler.text);
 
                 int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
-                if (playerCount >= gameData.result.info.character.Count)
+                if (playerCount >= gameData.result.info.playes_num)
                 {
                     for (int i = 0; i < gameData.result.info.Map.Count; i++)
                     {
@@ -310,7 +397,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 }
                 else
                 {
-                    Debug.Log("not enough player for this script!\n "+ gameData.result.info.character.Count);
+                    Debug.Log("not enough player for this script!\n " + gameData.result.info.character.Count);
                     scriptScroll.gameObject.SetActive(true);
                 }
             }
@@ -394,8 +481,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         StopCoroutine(IECountTime);
         countTime = 0;
+
         GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, countTime);
-        GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
+
+        LevelEnd();
     }
 
     IEnumerator CountTime()
@@ -441,7 +530,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else
                     s = "" + hour + ":0" + min + ":0" + sec;
             }
-            TimerText.GetComponent<TMP_Text>().text = s;
+            TimerText.text = s;
         }
         else if(t>60)
         {
@@ -462,11 +551,11 @@ public class GameManager : MonoBehaviourPunCallbacks
                 else
                     s = "0" + min + ":0" + sec;
             }
-            TimerText.GetComponent<TMP_Text>().text = s;
+            TimerText.text = s;
         }
         else
         {
-            TimerText.GetComponent<TMP_Text>().text = "" + t;
+            TimerText.text = "" + t;
         }
     }
 
@@ -478,8 +567,4 @@ public class GameManager : MonoBehaviourPunCallbacks
         votePanel.GetComponent<VotePanel>().CreatePlayerItem(GameObject.FindGameObjectsWithTag("Player"));
     }
 #endregion
-
-
-    
-
 }
