@@ -153,7 +153,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
                 obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
                 obj.GetComponent<Object>().objectInfoPanel = objectInfoPanel;
-                obj.GetComponent<Object>().SetInfoText(gameData.result.info.Map[index].Map_Object[i].message);
+                obj.GetComponent<Object>().SetInfo(gameData.result.info.Map[index].Map_Object[i].message);
                 obj.transform.localPosition = gameData.result.info.Map[index].Map_Object[i].GetPosition();
 
                 obj.transform.SetParent(objects.transform);

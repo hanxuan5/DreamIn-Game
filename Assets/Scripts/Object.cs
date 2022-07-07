@@ -10,6 +10,7 @@ public class Object : MonoBehaviour
 {
     public GameObject tipText;
     public GameObject objectInfoPanel;
+    public string objectInfo;
     private bool isInterable=false;
     private void Update()
     {
@@ -17,6 +18,7 @@ public class Object : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.X))
             {
+                SetInfoText(objectInfo);
                 objectInfoPanel.SetActive(true);
             }
         }
@@ -25,12 +27,14 @@ public class Object : MonoBehaviour
     {
         if(collision.CompareTag("Player")&& collision.gameObject.GetComponent<PlayerScript>().photonView.IsMine)
         {
+            if (objectInfo == "") return;
             tipText.SetActive(true);
             isInterable = true;
         }
     }
     private void OnTriggerExit2D(Collider2D collision)
     {
+        if (objectInfo == "") return;
         if(collision.CompareTag("Player")&& collision.gameObject.GetComponent<PlayerScript>().photonView.IsMine)
         {
             tipText.SetActive(false);
@@ -42,10 +46,13 @@ public class Object : MonoBehaviour
     {
         tipText.SetActive(false);
     }
-
+    public void SetInfo(string info)
+    {
+        objectInfo = info;
+    }    
     public void SetInfoText(string info)
     {
         objectInfoPanel.GetComponentInChildren<TMP_Text>().text = info;
-        
+        objectInfoPanel.GetComponentInChildren<TMP_Text>().text = objectInfo;
     }
 }
