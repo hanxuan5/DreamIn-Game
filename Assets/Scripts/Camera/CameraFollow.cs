@@ -6,20 +6,15 @@ public class CameraFollow : MonoBehaviour
 {
     public Transform target;
 
-    // 需要锁定的坐标（可以实时生效）
     public bool freazeX, freazeY;
 
-    // 跟随的平滑时间（类似于滞后时间）
     public float smoothTime = 0.3F;
     private float xVelocity, yVelocity= 0.0F;
 
-    // 跟随的偏移量
     private Vector3 offset;
 
-    // 全局缓存的位置变量
     private Vector3 oldPosition;
 
-    // 记录初始位置
     private Vector3 startPosition;
 
     void Start()
@@ -84,10 +79,6 @@ public class CameraFollow : MonoBehaviour
         target = t.transform;
         offset = transform.position - target.transform.position;
     }
-
-    /// <summary>
-    /// 用于重新开始游戏时直接重置相机位置
-    /// </summary>
     public void ResetPosition()
     {
         transform.position = startPosition;

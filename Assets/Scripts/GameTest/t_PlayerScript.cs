@@ -9,8 +9,8 @@ public class t_PlayerScript : MonoBehaviour
     public GameObject nameTextObj;
 
     internal string playerName;
-    private int playerIndex;//玩家在character数组中的编号
-    private int playerIdentity;//玩家的身份
+    private int playerIndex;//player index in character array
+    private int playerIdentity;
     private GameData gameData;
 
     private Rigidbody2D body;

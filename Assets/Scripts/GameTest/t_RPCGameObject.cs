@@ -5,7 +5,6 @@ using Photon.Pun;
 
 public class t_RPCGameObject : MonoBehaviour
 {
-    //所有需要生成在GameCanvas上的游戏测试物体必须挂载此类以防止比例问题
     public void Awake()
     {
         AddToCanvas();

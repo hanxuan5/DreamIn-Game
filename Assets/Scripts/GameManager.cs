@@ -110,7 +110,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     void UpdateMap(int index)
     {
-        //delete previous map
+        //delete previous map and object
         if(currentMap!=null)
         {
             Destroy(currentMap);
@@ -188,7 +188,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// <summary>
     /// Call this method when the countdown is over or the finish button is clicked
     /// </summary>
-    void LevelEnd()
+    void LevelCompelete()
     {
         //if this is the last map, show vote panel
         if (mapIndex == gameData.result.info.Map.Count)
@@ -300,32 +300,11 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     #endregion
 
- #region Download Data
+    #region Download Data
 
-    string GetImageLink(string addr)
-    {
-        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
-        imageLink += addr;
-        imageLink = imageLink.Replace(" ", "%20");
-        imageLink += ".png";
-        return imageLink;
-    }
-    public void DownLoadGameData(string ID)
-    {
-        gameDataID = ID;
-        GM_PhotonView.RPC("RPCDownloadGameData", RpcTarget.All, ID);
-    }
-    string GetGameDataLink(string ID)
-    {
-        return "https://api.dreamin.land/q_game/?id="+ID;
-    }
-
-    [PunRPC]
-    void RPCDownloadGameData(string ID)
-    {
-        //StartCoroutine(GetGameData(ID));
-        TestGameData();
-    }
+    /// <summary>
+    /// temporary method,just for testing new data format
+    /// </summary>
     void TestGameData()
     {
         //test new data format
@@ -355,6 +334,31 @@ public class GameManager : MonoBehaviourPunCallbacks
             scriptScroll.gameObject.SetActive(true);
         }
     }
+    string GetImageLink(string addr)
+    {
+        string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
+        imageLink += addr;
+        imageLink = imageLink.Replace(" ", "%20");
+        imageLink += ".png";
+        return imageLink;
+    }
+    public void DownLoadGameData(string ID)
+    {
+        gameDataID = ID;
+        GM_PhotonView.RPC("RPCDownloadGameData", RpcTarget.All, ID);
+    }
+    string GetGameDataLink(string ID)
+    {
+        return "https://api.dreamin.land/q_game/?id="+ID;
+    }
+
+    [PunRPC]
+    void RPCDownloadGameData(string ID)
+    {
+        //StartCoroutine(GetGameData(ID));
+        TestGameData();
+    }
+   
     IEnumerator GetGameData(string ID)
     {
         string url = GetGameDataLink(ID);
@@ -484,7 +488,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, countTime);
 
-        LevelEnd();
+        LevelCompelete();
     }
 
     IEnumerator CountTime()
