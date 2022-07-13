@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject watchButton;
     public GameObject startButton;
     public GameObject finishButton;
+    public GameObject cluesButton;
     public GameObject scriptScroll;
     public GameObject gameCanvas;
     public GameObject objects;
@@ -26,18 +27,21 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject objectInfoPanel;
     public GameObject timer;
     public GameObject currentMap;
+    public GameObject cluePanel;
 
     public TMP_Text PlayerInfoText;
     public TMP_Text PlayerNameText;
     public TMP_Text PlayerIdentityText;
     public TMP_Text EndText;
     public TMP_Text TimerText;
+    public TMP_Text ObjectInfoText;
 
-    private int countTime=0;
     private PhotonView GM_PhotonView;
     public GameData gameData;
     private string gameDataID;
     private GameObject localPlayer;
+
+    private int countTime = 0;
     private bool isDownloadCompelete=false;
     private int ColliderSize = 32;
     private int mapIndex = 0;
@@ -239,7 +243,6 @@ public class GameManager : MonoBehaviourPunCallbacks
         watchButton.SetActive(false);
         if (PhotonNetwork.IsMasterClient)
         {
-            //startButton.SetActive(true);
             scriptScroll.SetActive(true);
         }
     }
@@ -260,18 +263,14 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             finishButton.SetActive(true);
         }
-        startButton.SetActive(false);
-        timer.SetActive(true);
-        
-        List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
+        //instantiate players
+        List<GameCharacter> characters = new List<GameCharacter>(gameData.result.info.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
-
         if (playerObj.Length > characters.Count)
         {
             Debug.LogError("too many players!");
             return;
         }
-
         List<int> selectedIndex=new List<int>();
         for(int i=0;i<playerObj.Length;i++)
         {
@@ -283,6 +282,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             playerObj[i].GetComponent<PlayerScript>().SetPlayerData(index);
         }
 
+        startButton.SetActive(false);
+        cluesButton.SetActive(true);
         GM_PhotonView.RPC("RPCSetPlayerInfoPanel", RpcTarget.All);
 
         //instantiate GameStartFlag
@@ -290,12 +291,18 @@ public class GameManager : MonoBehaviourPunCallbacks
         flag.GetComponent<DataID>().SetGameDataId(gameDataID);
 
         //start count time
+        timer.SetActive(true);
         StartCountTime(countTime);
     }
 
     public void EndButton()
     {
         EndCountTime();
+    }
+
+    public void ShareButton()
+    {
+        cluePanel.GetComponent<CluePanel>().AddClue(ObjectInfoText.text);
     }
 
     #endregion

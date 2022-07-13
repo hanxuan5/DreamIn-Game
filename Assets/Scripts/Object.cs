@@ -49,7 +49,11 @@ public class Object : MonoBehaviour
     public void SetInfo(string info)
     {
         objectInfo = info;
-    }    
+    }
+    public string GetInfo()
+    {
+        return objectInfo;
+    }
     public void SetInfoText(string info)
     {
         objectInfoPanel.GetComponentInChildren<TMP_Text>().text = info;
