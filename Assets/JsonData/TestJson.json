@@ -24,6 +24,11 @@
               "image_link": "Objects/Decoration/balloons_heart_down",
               "position": "[-31.25828,60.66225,0]",
               "message": "a\n a \n a\n"
+            },
+            {
+              "image_link": "Objects/Decoration/balloons_heart_down",
+              "position": "[30.25828,-60,0]",
+              "message": "b\n b \n b\n"
             }
           ]
         },

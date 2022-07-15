@@ -290,6 +290,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tipText: {fileID: 5573439756336344547}
   objectInfoPanel: {fileID: 0}
+  shareButton: {fileID: 0}
+  objectInfo: 
+  CluePanel: {fileID: 0}
 --- !u!114 &-2332459649069042875
 MonoBehaviour:
   m_ObjectHideFlags: 0

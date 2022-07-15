@@ -10,7 +10,11 @@ public class Object : MonoBehaviour
 {
     public GameObject tipText;
     public GameObject objectInfoPanel;
+
+    public GameManager GM;
+    
     public string objectInfo;
+    public CluePanel CluePanel;
     private bool isInterable=false;
     private void Update()
     {
@@ -18,8 +22,7 @@ public class Object : MonoBehaviour
         {
             if(Input.GetKeyDown(KeyCode.X))
             {
-                SetInfoText(objectInfo);
-                objectInfoPanel.SetActive(true);
+                GM.ShowInfoPanel(this);
             }
         }
     }
@@ -57,6 +60,5 @@ public class Object : MonoBehaviour
     public void SetInfoText(string info)
     {
         objectInfoPanel.GetComponentInChildren<TMP_Text>().text = info;
-        objectInfoPanel.GetComponentInChildren<TMP_Text>().text = objectInfo;
     }
 }

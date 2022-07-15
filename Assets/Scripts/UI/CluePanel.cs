@@ -8,7 +8,9 @@ public class CluePanel : MonoBehaviour
 {
     public GameObject content;
     public GameObject item;
+    public TMP_Text DetailInfoText;
     List<GameObject> itemList = new List<GameObject>();
+    public List<string> clueList = new List<string>();
 
     public PhotonView photonView;
     public void AddClue(string clue)
@@ -39,8 +41,16 @@ public class CluePanel : MonoBehaviour
             itemList.Add(a);
         }
 
+        clueList.Add(clue);
+
         content.GetComponent<RectTransform>().sizeDelta =
               new Vector2(content.GetComponent<RectTransform>().sizeDelta.x, itemList.Count * (item.GetComponent<RectTransform>().rect.height + 20));
 
+    }
+
+    public void ShowDetailClue(TMP_Text clue)
+    {
+        DetailInfoText.text = clue.text;
+        DetailInfoText.transform.parent.parent.gameObject.SetActive(true);
     }
 }

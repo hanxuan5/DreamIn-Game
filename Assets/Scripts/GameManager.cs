@@ -36,6 +36,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public TMP_Text TimerText;
     public TMP_Text ObjectInfoText;
 
+    public Button infoShareButton;
+
     private PhotonView GM_PhotonView;
     public GameData gameData;
     private string gameDataID;
@@ -158,6 +160,7 @@ public class GameManager : MonoBehaviourPunCallbacks
                 obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
                 obj.GetComponent<Object>().objectInfoPanel = objectInfoPanel;
                 obj.GetComponent<Object>().SetInfo(gameData.result.info.Map[index].Map_Object[i].message);
+                obj.GetComponent<Object>().GM = this;
                 obj.transform.localPosition = gameData.result.info.Map[index].Map_Object[i].GetPosition();
 
                 obj.transform.SetParent(objects.transform);
@@ -212,6 +215,37 @@ public class GameManager : MonoBehaviourPunCallbacks
                 player.transform.localPosition = Vector2.zero;
             }
         }
+    }
+
+    /// <summary>
+    /// show infopanel according to the input obj's info
+    /// </summary>
+    /// <param name="obj"></param>
+    public void ShowInfoPanel(Object obj)
+    {
+        ObjectInfoText.text = obj.objectInfo;
+
+        //check whether the info is in the clue panel
+        bool flag = false;
+        foreach (string clue in cluePanel.GetComponent<CluePanel>().clueList)
+        {
+            if (obj.objectInfo == clue)
+            {
+                flag = true;
+            }
+        }
+        //if so share button in object panel is non interactive
+        if (flag)
+        {
+            infoShareButton.interactable = false;
+            infoShareButton.GetComponentInChildren<TMP_Text>().text = "Shared";
+        }
+        else
+        {
+            infoShareButton.interactable = true;
+            infoShareButton.GetComponentInChildren<TMP_Text>().text = "Share";
+        }
+        objectInfoPanel.SetActive(true);
     }
 
     #region Button
