@@ -624,20 +624,48 @@ PrefabInstance:
     m_TransformParent: {fileID: 1266353766}
     m_Modifications:
     - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Mode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1266353765}
     - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Target
+      value: 
+      objectReference: {fileID: 1976860447}
+    - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: SetActive
       objectReference: {fileID: 0}
     - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName
+      value: CloseEndPanel
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UnityEngine.GameObject, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_TargetAssemblyTypeName
+      value: GameManager, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 4192179058284058230, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_Pivot.x
@@ -2456,7 +2484,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Are you sure you want to end this game?
+  m_text: Are you sure you want to end this level?
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 08141c216841c45378beacdf21e83512, type: 2}
   m_sharedMaterial: {fileID: 797440587436487945, guid: 08141c216841c45378beacdf21e83512, type: 2}
@@ -5842,7 +5870,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: EndButton
+      value: EndLevelButton
       objectReference: {fileID: 0}
     - target: {fileID: 2482486731700531827, guid: 5664934b7910e1f4dabb9776ad070207, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[1].m_MethodName

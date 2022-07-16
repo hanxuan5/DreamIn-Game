@@ -21,7 +21,7 @@ public class ReceiveResult
 public class GameInfo
 {
     public string name;
-    //public string end;
+    public string final;
     //public int length;
     public int playes_num;
     public List<GameCharacter> character; //Maximum value:11

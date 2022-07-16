@@ -5,6 +5,7 @@
     "info": {
       "name": "TEST ONE Player",
       "players_num": 1,
+      "final": "We reach the final",
       "character": [
         {
           "name": "a",

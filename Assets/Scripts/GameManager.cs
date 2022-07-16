@@ -189,7 +189,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         countTime = gameData.result.info.Map[index].duration;
 
         //Set Final Text
-        EndText.text = gameData.result.info.Map[index].end;
+        //EndText.text = gameData.result.info.Map[index].end;
     }
 
     /// <summary>
@@ -200,11 +200,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         //if this is the last map, show vote panel
         if (mapIndex == gameData.result.info.Map.Count)
         {
-            GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
+            //Set and show end text
+            EndText.text = gameData.result.info.Map[mapIndex-1].end;
+            EndText.transform.parent.parent.gameObject.SetActive(true);
+
+            mapIndex=-1;//reach the end
+            
         }
         else
         {
+            //Set and show end text
+            EndText.text = gameData.result.info.Map[mapIndex - 1].end;
             EndText.transform.parent.parent.gameObject.SetActive(true);
+
             UpdateMap(mapIndex);
             mapIndex++;
             StartCountTime(countTime);//restart count time
@@ -329,14 +337,28 @@ public class GameManager : MonoBehaviourPunCallbacks
         StartCountTime(countTime);
     }
 
-    public void EndButton()
+    public void EndLevelButton()
     {
         EndCountTime();
     }
-
     public void ShareButton()
     {
         cluePanel.GetComponent<CluePanel>().AddClue(ObjectInfoText.text);
+    }
+
+    /// <summary>
+    /// if click close button on end panel, call this method
+    /// </summary>
+    public void CloseEndPanel()
+    {
+        //if this is the last level, show vote panel
+        if(mapIndex == -1)
+        {
+            mapIndex = 0;
+
+            GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
+            EndText.text = gameData.result.info.final;//set final end
+        }
     }
 
     #endregion
