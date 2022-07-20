@@ -8,6 +8,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using LitJson;
 using TMPro;
+using System.Text;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -134,34 +135,34 @@ public class GameManager : MonoBehaviourPunCallbacks
             map.transform.SetParent(gameCanvas.transform);
             map.transform.localScale = new Vector3(1, 1, 1);
 
-            float w = gameData.result.info.Map[index].mapTexture.width;
-            float h = gameData.result.info.Map[index].mapTexture.height;
+            float w = gameData.game_doc.map[index].mapTexture.width;
+            float h = gameData.game_doc.map[index].mapTexture.height;
 
             map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
             map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             map.transform.SetSiblingIndex(0);
-            map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+            map.GetComponent<Image>().sprite = Sprite.Create(gameData.game_doc.map[index].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
 
             currentMap = map;
         }
 
         //update map object
         {
-            for (int i = 0; i < gameData.result.info.Map[index].Map_Object.Count; i++)
+            for (int i = 0; i < gameData.game_doc.map[index].map_object.Count; i++)
             {
                 GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
 
                 obj.transform.SetParent(gameCanvas.transform);
                 obj.transform.localScale = new Vector3(1, 1, 1);
 
-                float w = gameData.result.info.Map[index].Map_Object[i].objTexture.width;
-                float h = gameData.result.info.Map[index].Map_Object[i].objTexture.height;
+                float w = gameData.game_doc.map[index].map_object[i].objTexture.width;
+                float h = gameData.game_doc.map[index].map_object[i].objTexture.height;
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
-                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.game_doc.map[index].map_object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
                 obj.GetComponent<Object>().objectInfoPanel = objectInfoPanel;
-                obj.GetComponent<Object>().SetInfo(gameData.result.info.Map[index].Map_Object[i].message);
+                obj.GetComponent<Object>().SetInfo(gameData.game_doc.map[index].map_object[i].message);
                 obj.GetComponent<Object>().GM = this;
-                obj.transform.localPosition = gameData.result.info.Map[index].Map_Object[i].GetPosition();
+                obj.transform.localPosition = gameData.game_doc.map[index].map_object[i].GetPosition();
 
                 obj.transform.SetParent(objects.transform);
             }
@@ -169,9 +170,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         //update collision
         {
-            float w = gameData.result.info.Map[index].mapTexture.width / 2;
-            float h = gameData.result.info.Map[index].mapTexture.height / 2;
-            string[] rows = gameData.result.info.Map[index].collide_map.Split(';');
+            float w = gameData.game_doc.map[index].mapTexture.width / 2;
+            float h = gameData.game_doc.map[index].mapTexture.height / 2;
+            string[] rows = gameData.game_doc.map[index].collide_map.Split(';');
             for (int i = 0; i < rows.Length; i++)
             {
                 string[] cols = rows[i].Split(',');
@@ -186,7 +187,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
 
         //set count time
-        countTime = gameData.result.info.Map[index].duration;
+        countTime = int.Parse(gameData.game_doc.map[index].duration);
 
         //Set Final Text
         //EndText.text = gameData.result.info.Map[index].end;
@@ -198,19 +199,18 @@ public class GameManager : MonoBehaviourPunCallbacks
     void LevelCompelete()
     {
         //if this is the last map, show vote panel
-        if (mapIndex == gameData.result.info.Map.Count)
+        if (mapIndex == gameData.game_doc.map.Count)
         {
             //Set and show end text
-            EndText.text = gameData.result.info.Map[mapIndex-1].end;
+            EndText.text = gameData.game_doc.map[mapIndex-1].end;
             EndText.transform.parent.parent.gameObject.SetActive(true);
 
             mapIndex=-1;//reach the end
-            
         }
         else
         {
             //Set and show end text
-            EndText.text = gameData.result.info.Map[mapIndex - 1].end;
+            EndText.text = gameData.game_doc.map[mapIndex - 1].end;
             EndText.transform.parent.parent.gameObject.SetActive(true);
 
             UpdateMap(mapIndex);
@@ -306,7 +306,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             finishButton.SetActive(true);
         }
         //instantiate players
-        List<GameCharacter> characters = new List<GameCharacter>(gameData.result.info.character);
+        List<GameCharacter> characters = new List<GameCharacter>(gameData.game_doc.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
         if (playerObj.Length > characters.Count)
         {
@@ -357,7 +357,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             mapIndex = 0;
 
             GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
-            EndText.text = gameData.result.info.final;//set final end
+            EndText.text = gameData.game_doc.final;//set final end
         }
     }
 
@@ -370,21 +370,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     /// </summary>
     void TestGameData()
     {
-        //test new data format
-        string testPath = "Assets/JsonData/TestJson.json";
-        gameData = JsonMapper.ToObject<GameData>(File.ReadAllText(testPath));
+        gameData = JsonMapper.ToObject<GameData>(File.ReadAllText("Assets/JsonData/DebugData.json"));
 
         int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
-        if (playerCount >= gameData.result.info.playes_num)
+        if (playerCount >=int.Parse(gameData.game_doc.players_num))
         {
-            for (int i = 0; i < gameData.result.info.Map.Count; i++)
+            for (int i = 0; i < gameData.game_doc.map.Count; i++)
             {
-                string addr = gameData.result.info.Map[i].background;
+                string addr = gameData.game_doc.map[i].background;
                 StartCoroutine(GetMapTexture(addr, i));
 
-                for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
+                for (int j = 0; j < gameData.game_doc.map[i].map_object.Count; j++)
                 {
-                    string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
+                    string objAddr = gameData.game_doc.map[i].map_object[j].image_link;
                     StartCoroutine(GetObjectTexture(objAddr, i, j));
                 }
             }
@@ -393,7 +391,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.Log("not enough player for this script!\n " + gameData.result.info.character.Count);
+            Debug.Log("not enough player for this script!\n " + gameData.game_doc.character.Count);
             scriptScroll.gameObject.SetActive(true);
         }
     }
@@ -424,51 +422,78 @@ public class GameManager : MonoBehaviourPunCallbacks
    
     IEnumerator GetGameData(string ID)
     {
-        string url = GetGameDataLink(ID);
-        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
-        {
-            yield return webRequest.SendWebRequest();
+        yield return null;
+        //        //new Data Format
+        //        string url = "https://api.dreamin.land/get_game_doc/";
+        //        UnityWebRequest webRequest = new UnityWebRequest(url, "POST");
 
-            if (webRequest.result == UnityWebRequest.Result.ProtocolError || webRequest.result == UnityWebRequest.Result.ConnectionError)
-            {
-                Debug.LogError(webRequest.error + "\n" + webRequest.downloadHandler.text);
-            }
-            else
-            {
-#if UNITY_EDITOR
-                //Save a gamedata backup for debug
-                string savePath = "Assets/JsonData/GameData.json";
-                File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
-#endif
+        //        Encoding encoding = Encoding.UTF8;
+        //        byte[] buffer = encoding.GetBytes("{\"id\":" + ID + "}");
+        //        webRequest.uploadHandler = new UploadHandlerRaw(buffer);
+        //        webRequest.downloadHandler = new DownloadHandlerBuffer();
 
-                gameData = JsonMapper.ToObject<GameData>(webRequest.downloadHandler.text);
+        //        yield return webRequest.SendWebRequest();
 
-                int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
-                if (playerCount >= gameData.result.info.playes_num)
-                {
-                    for (int i = 0; i < gameData.result.info.Map.Count; i++)
-                    {
-                        string addr = gameData.result.info.Map[i].background;
-                        StartCoroutine(GetMapTexture(addr, i));
+        //        if (webRequest.result == UnityWebRequest.Result.ProtocolError || webRequest.result == UnityWebRequest.Result.ConnectionError)
+        //        {
+        //            Debug.LogError(webRequest.error + "\n" + webRequest.downloadHandler.text);
+        //        }
+        //        else
+        //        {
+        //            Debug.Log("succcess!!!");
+        //#if UNITY_EDITOR
+        //            //Save a gamedata backup for debug
+        //            string savePath = "Assets/JsonData/GameData.json";
+        //            File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
+        //#endif
+        //        }
 
-                        for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
-                        {
-                            string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
-                            StartCoroutine(GetObjectTexture(objAddr, i, j));
-                        }
+        //        //Old Data Format
+        //        string url = GetGameDataLink(ID);
+        //        using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
+        //        {
+        //            yield return webRequest.SendWebRequest();
+
+        //            if (webRequest.result == UnityWebRequest.Result.ProtocolError || webRequest.result == UnityWebRequest.Result.ConnectionError)
+        //            {
+        //                Debug.LogError(webRequest.error + "\n" + webRequest.downloadHandler.text);
+        //            }
+        //            else
+        //            {
+        //#if UNITY_EDITOR
+        //                //Save a gamedata backup for debug
+        //                string savePath = "Assets/JsonData/GameData.json";
+        //                File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
+        //#endif
+
+        //                gameData = JsonMapper.ToObject<GameData>(webRequest.downloadHandler.text);
+
+        //                int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
+        //                if (playerCount >= gameData.result.info.playes_num)
+        //                {
+        //                    for (int i = 0; i < gameData.result.info.Map.Count; i++)
+        //                    {
+        //                        string addr = gameData.result.info.Map[i].background;
+        //                        StartCoroutine(GetMapTexture(addr, i));
+
+        //                        for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
+        //                        {
+        //                            string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
+        //                            StartCoroutine(GetObjectTexture(objAddr, i, j));
+        //                        }
 
 
-                    }
-                    StartCoroutine(WaitForDownloadCompelete());
-                    scriptScroll.gameObject.SetActive(false);
-                }
-                else
-                {
-                    Debug.Log("not enough player for this script!\n " + gameData.result.info.character.Count);
-                    scriptScroll.gameObject.SetActive(true);
-                }
-            }
-        }
+        //                    }
+        //                    StartCoroutine(WaitForDownloadCompelete());
+        //                    scriptScroll.gameObject.SetActive(false);
+        //                }
+        //                else
+        //                {
+        //                    Debug.Log("not enough player for this script!\n " + gameData.result.info.character.Count);
+        //                    scriptScroll.gameObject.SetActive(true);
+        //                }
+        //            }
+        //        }
     }
 
     IEnumerator GetMapTexture(string addr, int i)
@@ -486,7 +511,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             Texture2D t= ((DownloadHandlerTexture)www.downloadHandler).texture;
             t.filterMode = FilterMode.Point;
-            gameData.result.info.Map[i].mapTexture = t;
+            gameData.game_doc.map[i].mapTexture = t;
         }
     }
 
@@ -505,7 +530,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             Texture2D t = ((DownloadHandlerTexture)www.downloadHandler).texture;
             t.filterMode = FilterMode.Point;
-            gameData.result.info.Map[i].Map_Object[j].objTexture = t;
+            gameData.game_doc.map[i].map_object[j].objTexture = t;
         }
     }
     IEnumerator WaitForDownloadCompelete()
@@ -513,10 +538,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         while (true)
         {
             bool isCompelete = true;
-            foreach (GameMap gm in gameData.result.info.Map)
+            foreach (GameMap gm in gameData.game_doc.map)
             {
                 if (gm.mapTexture == null) isCompelete = false;
-                foreach (PlacedObject po in gm.Map_Object)
+                foreach (PlacedObject po in gm.map_object)
                 {
                     if (po.objTexture == null) isCompelete = false;
                 }

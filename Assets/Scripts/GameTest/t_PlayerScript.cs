@@ -90,6 +90,6 @@ public class t_PlayerScript : MonoBehaviour
     }
     public string GetPlayerInfo()
     {
-        return gameData.result.info.character[playerIndex].background;
+        return gameData.game_doc.character[playerIndex].background;
     }
 }

@@ -84,7 +84,7 @@ public class TestManager: MonoBehaviourPunCallbacks
 
             //Set PlayerInfoPanel
             infoCharacterIndex = 0;
-            SetPlayerInfoPanel(gameData.result.info.character[infoCharacterIndex]);
+            SetPlayerInfoPanel(gameData.game_doc.character[infoCharacterIndex]);
         }
 
         //Set Map
@@ -93,7 +93,7 @@ public class TestManager: MonoBehaviourPunCallbacks
             UpdateMap(mapIndex);
             mapIndex++;
         }
-    }
+    } 
 
     void UpdateMap(int index)
     {
@@ -115,33 +115,33 @@ public class TestManager: MonoBehaviourPunCallbacks
             map.transform.SetParent(gameCanvas.transform);
             map.transform.localScale = new Vector3(1, 1, 1);
 
-            float w = gameData.result.info.Map[index].mapTexture.width;
-            float h = gameData.result.info.Map[index].mapTexture.height;
+            float w = gameData.game_doc.map[index].mapTexture.width;
+            float h = gameData.game_doc.map[index].mapTexture.height;
 
             map.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
             map.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
             map.transform.SetSiblingIndex(0);
-            map.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+            map.GetComponent<Image>().sprite = Sprite.Create(gameData.game_doc.map[index].mapTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
 
             currentMap = map;
         }
 
         //update map object
         {
-            for (int i = 0; i < gameData.result.info.Map[index].Map_Object.Count; i++)
+            for (int i = 0; i < gameData.game_doc.map[index].map_object.Count; i++)
             {
                 GameObject obj = Instantiate(objectPrefab, new Vector2(0, 0), Quaternion.identity, objects.transform);
 
                 obj.transform.SetParent(gameCanvas.transform);
                 obj.transform.localScale = new Vector3(1, 1, 1);
 
-                float w = gameData.result.info.Map[index].Map_Object[i].objTexture.width;
-                float h = gameData.result.info.Map[index].Map_Object[i].objTexture.height;
+                float w = gameData.game_doc.map[index].map_object[i].objTexture.width;
+                float h = gameData.game_doc.map[index].map_object[i].objTexture.height;
                 obj.GetComponent<RectTransform>().sizeDelta = new Vector2(w, h);
-                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.result.info.Map[index].Map_Object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
+                obj.GetComponent<Image>().sprite = Sprite.Create(gameData.game_doc.map[index].map_object[i].objTexture, new Rect(0, 0, w, h), new Vector2(0, 0));
                 obj.GetComponent<t_Object>().objectInfoPanel = objectInfoPanel;
-                obj.GetComponent<t_Object>().SetInfo(gameData.result.info.Map[index].Map_Object[i].message);
-                obj.transform.localPosition = gameData.result.info.Map[index].Map_Object[i].GetPosition();
+                obj.GetComponent<t_Object>().SetInfo(gameData.game_doc.map[index].map_object[i].message);
+                obj.transform.localPosition = gameData.game_doc.map[index].map_object[i].GetPosition();
 
                 obj.transform.SetParent(objects.transform);
             }
@@ -149,9 +149,9 @@ public class TestManager: MonoBehaviourPunCallbacks
 
         //update collision
         {
-            float w = gameData.result.info.Map[index].mapTexture.width / 2;
-            float h = gameData.result.info.Map[index].mapTexture.height / 2;
-            string[] rows = gameData.result.info.Map[index].collide_map.Split(';');
+            float w = gameData.game_doc.map[index].mapTexture.width / 2;
+            float h = gameData.game_doc.map[index].mapTexture.height / 2;
+            string[] rows = gameData.game_doc.map[index].collide_map.Split(';');
             for (int i = 0; i < rows.Length; i++)
             {
                 string[] cols = rows[i].Split(',');
@@ -166,11 +166,11 @@ public class TestManager: MonoBehaviourPunCallbacks
         }
 
         //set count time
-        countTime = gameData.result.info.Map[index].duration;
+        countTime = int.Parse(gameData.game_doc.map[index].duration);
         SetTimerText(countTime);
 
         //Set Final Text
-        EndText.text = gameData.result.info.Map[index].end;
+        EndText.text = gameData.game_doc.map[index].end;
     }
 
     void SetTimerText(int t)
@@ -225,13 +225,11 @@ public class TestManager: MonoBehaviourPunCallbacks
         }
     }
 
-
-
     #region Button
     public void NextLevel()
     {
         //if this is the last map, show 
-        if (mapIndex == gameData.result.info.Map.Count)
+        if (mapIndex == gameData.game_doc.map.Count)
         {
             Debug.Log("This is the last map");
         }
@@ -251,7 +249,7 @@ public class TestManager: MonoBehaviourPunCallbacks
 
     public void NextButton()
     {        
-        List<GameCharacter> characters =new List<GameCharacter>(gameData.result.info.character);
+        List<GameCharacter> characters =new List<GameCharacter>(gameData.game_doc.character);
         infoCharacterIndex++;
         if(infoCharacterIndex>=characters.Count)
             infoCharacterIndex = 0;
@@ -260,7 +258,7 @@ public class TestManager: MonoBehaviourPunCallbacks
     }
     public void PrevButton()
     {
-        List<GameCharacter> characters = new List<GameCharacter>(gameData.result.info.character);
+        List<GameCharacter> characters = new List<GameCharacter>(gameData.game_doc.character);
         infoCharacterIndex--;
         if (infoCharacterIndex <0)
             infoCharacterIndex = characters.Count-1;
@@ -281,16 +279,16 @@ public class TestManager: MonoBehaviourPunCallbacks
         gameData = JsonMapper.ToObject<GameData>(File.ReadAllText(testPath));
 
         int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
-        if (playerCount >= gameData.result.info.playes_num)
+        if (playerCount >= int.Parse(gameData.game_doc.players_num))
         {
-            for (int i = 0; i < gameData.result.info.Map.Count; i++)
+            for (int i = 0; i < gameData.game_doc.map.Count; i++)
             {
-                string addr = gameData.result.info.Map[i].background;
+                string addr = gameData.game_doc.map[i].background;
                 StartCoroutine(GetMapTexture(addr, i));
 
-                for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
+                for (int j = 0; j < gameData.game_doc.map[i].map_object.Count; j++)
                 {
-                    string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
+                    string objAddr = gameData.game_doc.map[i].map_object[j].image_link;
                     StartCoroutine(GetObjectTexture(objAddr, i, j));
                 }
             }
@@ -299,7 +297,7 @@ public class TestManager: MonoBehaviourPunCallbacks
         }
         else
         {
-            Debug.Log("not enough player for this script!\n " + gameData.result.info.character.Count);
+            Debug.Log("not enough player for this script!\n " + gameData.game_doc.character.Count);
             scriptScroll.gameObject.SetActive(true);
         }
     }
@@ -342,14 +340,14 @@ public class TestManager: MonoBehaviourPunCallbacks
                 }
 
                 gameData = JsonMapper.ToObject<GameData>(webRequest.downloadHandler.text);
-                for (int i = 0; i < gameData.result.info.Map.Count; i++)
+                for (int i = 0; i < gameData.game_doc.map.Count; i++)
                 {
-                    string addr = gameData.result.info.Map[i].background;
+                    string addr = gameData.game_doc.map[i].background;
                     StartCoroutine(GetMapTexture(addr, i));
 
-                    for (int j = 0; j < gameData.result.info.Map[i].Map_Object.Count; j++)
+                    for (int j = 0; j < gameData.game_doc.map[i].map_object.Count; j++)
                     {
-                        string objAddr = gameData.result.info.Map[i].Map_Object[j].image_link;
+                        string objAddr = gameData.game_doc.map[i].map_object[j].image_link;
                         StartCoroutine(GetObjectTexture(objAddr, i, j));
                     }
                 }
@@ -376,7 +374,7 @@ public class TestManager: MonoBehaviourPunCallbacks
         {
             Texture2D t= ((DownloadHandlerTexture)www.downloadHandler).texture;
             t.filterMode = FilterMode.Point;
-            gameData.result.info.Map[i].mapTexture = t;
+            gameData.game_doc.map[i].mapTexture = t;
         }
     }
 
@@ -398,7 +396,7 @@ public class TestManager: MonoBehaviourPunCallbacks
         {
             Texture2D t = ((DownloadHandlerTexture)www.downloadHandler).texture;
             t.filterMode = FilterMode.Point;
-            gameData.result.info.Map[i].Map_Object[j].objTexture = t;
+            gameData.game_doc.map[i].map_object[j].objTexture = t;
         }
     }
     IEnumerator WaitForDownloadCompelete()
@@ -406,10 +404,10 @@ public class TestManager: MonoBehaviourPunCallbacks
         while (true)
         {
             bool isCompelete = true;
-            foreach (GameMap gm in gameData.result.info.Map)
+            foreach (GameMap gm in gameData.game_doc.map)
             {
                 if (gm.mapTexture == null) isCompelete = false;
-                foreach (PlacedObject po in gm.Map_Object)
+                foreach (PlacedObject po in gm.map_object)
                 {
                     if (po.objTexture == null) isCompelete = false;
                 }

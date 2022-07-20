@@ -105,9 +105,9 @@ public class PlayerScript : MonoBehaviour
         gameData = GameObject.Find("GameManager").GetComponent<GameManager>().gameData;
 
         playerIndex = index;
-        SetPlayerName(gameData.result.info.character[playerIndex].name);
+        SetPlayerName(gameData.game_doc.character[playerIndex].name);
 
-        playerIdentity = gameData.result.info.character[playerIndex].identity;
+        playerIdentity = gameData.game_doc.character[playerIndex].identity;
     }
 
     public void SetPlayerName(string name)
@@ -155,6 +155,6 @@ public class PlayerScript : MonoBehaviour
     }
     public string GetPlayerInfo()
     {
-        return gameData.result.info.character[playerIndex].background;
+        return gameData.game_doc.character[playerIndex].background;
     }
 }

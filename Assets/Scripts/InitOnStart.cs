@@ -42,14 +42,14 @@ namespace Demo
 
         public void ProvideData(Transform transform, int idx)
         {
-            string[] subs = sj.GetScriptsResult().GetScript(idx).name.Split(',');
-            if (idx > 37) //Delete after
-            {
-                transform.GetChild(0).gameObject.GetComponent<Text>().text = subs[0] + "(" + subs[1] + " players)";
-                transform.gameObject.GetComponent<ScrollIndexCallback1>().gameID = sj.GetScriptsResult().GetScript(idx).id.ToString();
-                transform.gameObject.GetComponent<ScrollIndexCallback1>().numOfPlayer = int.Parse(subs[1]);
-            }
-            transform.SendMessage("ScrollCellIndex", idx);
+            //string[] subs = sj.GetScriptsResult().GetScript(idx).name.Split(',');
+            //if (idx > 37) //Delete after
+            //{
+            //    transform.GetChild(0).gameObject.GetComponent<Text>().text = subs[0] + "(" + subs[1] + " players)";
+            //    transform.gameObject.GetComponent<ScrollIndexCallback1>().gameID = sj.GetScriptsResult().GetScript(idx).id.ToString();
+            //    transform.gameObject.GetComponent<ScrollIndexCallback1>().numOfPlayer = int.Parse(subs[1]);
+            //}
+            //transform.SendMessage("ScrollCellIndex", idx);
         }
 
         void Start()
@@ -84,7 +84,7 @@ namespace Demo
                     File.WriteAllText(savePath, webRequest.downloadHandler.text);
 
                     sj = JsonMapper.ToObject<ScriptsJsonData>(webRequest.downloadHandler.text);
-                    totalCount = sj.GetScriptsResult().GetNum();
+                    //totalCount = sj.GetScriptsResult().GetNum();
                     CreateCells();
                 }
             }
