@@ -139,8 +139,7 @@ public class SelectPanel : MonoBehaviour
     IEnumerator GetNameAndID()
     {
         //string url = "https://api.dreamin.land/game_name/";//previous download link
-        //string url = "https://api.dreamin.land/true_info_get/";//get scripts info which status==1;
-        string url = "https://api.dreamin.land/info_get/";//get all scripts info
+        string url = "https://api.dreamin.land/true_info_get/";//get scripts info which status==1;
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {
             yield return webRequest.SendWebRequest();

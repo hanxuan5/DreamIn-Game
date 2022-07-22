@@ -77,13 +77,13 @@ using UnityEngine;
 /// <summary>
 /// GameData's new Format
 /// </summary>
-public class GameData
+public class ReceiveData
 {
     public string status;
     public int code;
-    public GameDoc game_doc;
+    public string game_doc;
 }
-public class GameDoc
+public class GameData
 {
     public string _id;
     public string name;
