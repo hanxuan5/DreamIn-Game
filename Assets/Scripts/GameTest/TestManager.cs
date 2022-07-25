@@ -301,48 +301,10 @@ public class TestManager: MonoBehaviourPunCallbacks
 
     #region Download Data
 
-    /// <summary>
-    /// temporary method,just for testing new data format
-    /// </summary>
-    void TestGameData()
-    {
-        //Manually remove double quotation marks
-        string gameDocStr = "\"game_doc\":";
-        string text= File.ReadAllText("Assets/JsonData/DebugData.json");
-        int index = text.IndexOf(gameDocStr)+ gameDocStr.Length;
-        string substr = text.Substring(index);
-        string gameDataStr = substr.Substring(2, substr.Length - 2);
-
-        gameData = JsonMapper.ToObject<GameData>(gameDataStr);
-        int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
-        if (playerCount >= int.Parse(gameData.players_num))
-        {
-            for (int i = 0; i < gameData.map.Count; i++)
-            {
-                string addr = gameData.map[i].background;
-                StartCoroutine(GetMapTexture(addr, i));
-
-                for (int j = 0; j < gameData.map[i].map_object.Count; j++)
-                {
-                    string objAddr = gameData.map[i].map_object[j].image_link;
-                    StartCoroutine(GetObjectTexture(objAddr, i, j));
-                }
-            }
-            StartCoroutine(WaitForDownloadCompelete());
-            scriptScroll.gameObject.SetActive(false);
-        }
-        else
-        {
-            Debug.Log("not enough player for this script!\n " + gameData.character.Count);
-            scriptScroll.gameObject.SetActive(true);
-        }
-    }
-
     public void DownLoadGameData(string ID)
     {
         gameDataID = ID;
         StartCoroutine(GetGameData(ID));
-        //TestGameData();
     }
 
     IEnumerator GetGameData(string ID)
@@ -375,28 +337,19 @@ public class TestManager: MonoBehaviourPunCallbacks
         //read and store in gameData
         ReceiveData d = JsonMapper.ToObject<ReceiveData>(webRequest.downloadHandler.text);
         gameData = JsonMapper.ToObject<GameData>(d.game_doc);
-        int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
-        if (playerCount >= int.Parse(gameData.players_num))
+        for (int i = 0; i < gameData.map.Count; i++)
         {
-            for (int i = 0; i < gameData.map.Count; i++)
-            {
-                string addr = gameData.map[i].background;
-                StartCoroutine(GetMapTexture(addr, i));
+            string addr = gameData.map[i].background;
+            StartCoroutine(GetMapTexture(addr, i));
 
-                for (int j = 0; j < gameData.map[i].map_object.Count; j++)
-                {
-                    string objAddr = gameData.map[i].map_object[j].image_link;
-                    StartCoroutine(GetObjectTexture(objAddr, i, j));
-                }
+            for (int j = 0; j < gameData.map[i].map_object.Count; j++)
+            {
+                string objAddr = gameData.map[i].map_object[j].image_link;
+                StartCoroutine(GetObjectTexture(objAddr, i, j));
             }
-            StartCoroutine(WaitForDownloadCompelete());
-            scriptScroll.gameObject.SetActive(false);
         }
-        else
-        {
-            Debug.Log("not enough player for this script!\n " + gameData.character.Count);
-            scriptScroll.gameObject.SetActive(true);
-        }
+        StartCoroutine(WaitForDownloadCompelete());
+        scriptScroll.gameObject.SetActive(false);
     }
 
     IEnumerator GetMapTexture(string addr, int i)

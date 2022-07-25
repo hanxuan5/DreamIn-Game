@@ -77,8 +77,9 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     [PunRPC]
-    void RPCSetPlayerInfoPanel()
+    void RPCInitializedGame()
     {
+        //initailize player panel
         if (localPlayer != null)
         {
             PlayerNameText.text = "Your name is " + localPlayer.GetComponent<PlayerScript>().GetPlayerName();
@@ -86,6 +87,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             PlayerInfoText.text = localPlayer.GetComponent<PlayerScript>().GetPlayerInfo();
             PlayerInfoText.transform.parent.parent.parent.gameObject.SetActive(true);
         }
+
+        cluesButton.SetActive(true);
     }
 
     public void UpdateScene()
@@ -108,7 +111,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             mapIndex = 0;
             UpdateMap(mapIndex);
-            mapIndex++;
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                mapIndex++;
+                GM_PhotonView.RPC("RPCSetMapIndex", RpcTarget.All, mapIndex);
+            }
         }
 
         if(PhotonNetwork.IsMasterClient)
@@ -193,6 +201,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         //EndText.text = gameData.result.info.Map[index].end;
     }
 
+    [PunRPC]
+    void RPCLevelCompelete()
+    {
+        LevelCompelete();
+    }
     /// <summary>
     /// Call this method when the countdown is over or the finish button is clicked
     /// </summary>
@@ -201,11 +214,19 @@ public class GameManager : MonoBehaviourPunCallbacks
         //if this is the last map, show vote panel
         if (mapIndex == gameData.map.Count)
         {
+            if (PhotonNetwork.IsMasterClient)
+                GM_PhotonView.RPC("RPCSetMapIndex", RpcTarget.All, mapIndex);
+
             //Set and show end text
             EndText.text = gameData.map[mapIndex-1].end;
             EndText.transform.parent.parent.gameObject.SetActive(true);
 
-            mapIndex=-1;//reach the end
+            
+            if (PhotonNetwork.IsMasterClient)
+            {
+                mapIndex = -1;//reach the end
+                GM_PhotonView.RPC("RPCSetMapIndex", RpcTarget.All, mapIndex);
+            }
         }
         else
         {
@@ -214,7 +235,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             EndText.transform.parent.parent.gameObject.SetActive(true);
 
             UpdateMap(mapIndex);
-            mapIndex++;
+            if (PhotonNetwork.IsMasterClient)
+            {
+                mapIndex++;
+                GM_PhotonView.RPC("RPCSetMapIndex", RpcTarget.All, mapIndex);
+            }
+
             StartCountTime(countTime);//restart count time
 
             GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
@@ -305,6 +331,9 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             finishButton.SetActive(true);
         }
+
+        startButton.SetActive(false);
+
         //instantiate players
         List<GameCharacter> characters = new List<GameCharacter>(gameData.character);
         GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
@@ -324,9 +353,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             playerObj[i].GetComponent<PlayerScript>().SetPlayerData(index);
         }
 
-        startButton.SetActive(false);
-        cluesButton.SetActive(true);
-        GM_PhotonView.RPC("RPCSetPlayerInfoPanel", RpcTarget.All);
+        GM_PhotonView.RPC("RPCInitializedGame", RpcTarget.All);
 
         //instantiate GameStartFlag
         GameObject flag = PhotonNetwork.Instantiate("GameStartFlag", gameCanvas.transform.position, Quaternion.identity, 0);
@@ -352,56 +379,24 @@ public class GameManager : MonoBehaviourPunCallbacks
     public void CloseEndPanel()
     {
         //if this is the last level, show vote panel
-        if(mapIndex == -1)
+        //Only MasterClient can open votePanel;
+        if(PhotonNetwork.IsMasterClient && mapIndex==-1)
         {
-            mapIndex = 0;
-
+            GM_PhotonView.RPC("RPCSetMapIndex", RpcTarget.All, 0);
             GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
-            EndText.text = gameData.final;//set final end
         }
+        EndText.text = gameData.final;//set final end
+    }
+
+    [PunRPC]
+    void RPCSetMapIndex(int index)
+    {
+        mapIndex = index;
     }
 
     #endregion
 
     #region Download Data
-
-    /// <summary>
-    /// temporary method,just for testing new data format
-    /// </summary>
-    void TestGameData()
-    {
-        //Manually remove double quotation marks
-        string gameDocStr = "\"game_doc\":";
-        string text = File.ReadAllText("Assets/JsonData/DebugData.json");
-        int index = text.IndexOf(gameDocStr) + gameDocStr.Length;
-        string substr = text.Substring(index);
-        string gameDataStr = substr.Substring(2, substr.Length - 2);
-
-        //read and store in gameData
-        gameData = JsonMapper.ToObject<GameData>(gameDataStr);
-        int playerCount = GameObject.FindGameObjectsWithTag("Player").Length;
-        if (playerCount >= int.Parse(gameData.players_num))
-        {
-            for (int i = 0; i < gameData.map.Count; i++)
-            {
-                string addr = gameData.map[i].background;
-                StartCoroutine(GetMapTexture(addr, i));
-
-                for (int j = 0; j < gameData.map[i].map_object.Count; j++)
-                {
-                    string objAddr = gameData.map[i].map_object[j].image_link;
-                    StartCoroutine(GetObjectTexture(objAddr, i, j));
-                }
-            }
-            StartCoroutine(WaitForDownloadCompelete());
-            scriptScroll.gameObject.SetActive(false);
-        }
-        else
-        {
-            Debug.Log("not enough player for this script!\n " + gameData.character.Count);
-            scriptScroll.gameObject.SetActive(true);
-        }
-    }
     string GetImageLink(string addr)
     {
         string imageLink = "https://raw.githubusercontent.com/hanxuan5/DreamIn-Assets/master/";
@@ -424,7 +419,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RPCDownloadGameData(string ID)
     {
         StartCoroutine(GetGameData(ID));
-        //TestGameData();
     }
    
     IEnumerator GetGameData(string ID)
@@ -561,7 +555,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, countTime);
 
-        LevelCompelete();
+        GM_PhotonView.RPC("RPCLevelCompelete", RpcTarget.All);
     }
 
     IEnumerator CountTime()
@@ -572,7 +566,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             GM_PhotonView.RPC("RPCSetTimerText", RpcTarget.All, countTime);
             if(countTime==0)
             {
-                GM_PhotonView.RPC("RPCShowVotePanel", RpcTarget.All);
+                EndCountTime();
                 break;
             }
             yield return new WaitForSeconds(1);
@@ -642,6 +636,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         if (localPlayer==null || localPlayer.tag == "Watcher") return;
         votePanel.SetActive(true);
         votePanel.GetComponent<VotePanel>().CreatePlayerItem(GameObject.FindGameObjectsWithTag("Player"));
+        EndText.transform.parent.parent.gameObject.SetActive(false); 
     }
 #endregion
 }
