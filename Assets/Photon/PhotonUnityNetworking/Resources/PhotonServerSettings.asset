@@ -64,6 +64,10 @@ MonoBehaviour:
   - RPCInitializedGame
   - RPCLevelCompelete
   - RPCSetMapIndex
+  - RPCAddPlayerNum
+  - RPCAddSelectData
+  - RPCShowSelectResult
+  - RPCShowSelectPanel
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

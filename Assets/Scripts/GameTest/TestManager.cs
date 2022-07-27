@@ -28,7 +28,7 @@ public class TestManager: MonoBehaviourPunCallbacks
 
     public TMP_Text PlayerInfoText;
     public TMP_Text PlayerNameText;
-    public TMP_Text PlayerIdentityText;
+    //public TMP_Text PlayerIdentityText;
     public TMP_Text EndText;
     public TMP_Text TimerText;
 
@@ -57,7 +57,7 @@ public class TestManager: MonoBehaviourPunCallbacks
     void SetPlayerInfoPanel(GameCharacter character)
     {
         PlayerNameText.text = "Your name is " + character.name;
-        PlayerIdentityText.text = "You are a " + GetPlayerIdentity(character.identity);
+        //PlayerIdentityText.text = "You are a " + GetPlayerIdentity(character.identity);
         PlayerInfoText.text = character.background;
     }
     public string GetPlayerIdentity(int identity)
@@ -76,7 +76,7 @@ public class TestManager: MonoBehaviourPunCallbacks
         }
         return "";
     }
-    public void UpdateScene()
+    public void InitializedScene()
     {
         //this is game test scene, we don't need to change the character texture, just update the player info panel
         {
@@ -413,7 +413,7 @@ public class TestManager: MonoBehaviourPunCallbacks
         }
         Debug.Log("Download Compelete!");
         isDownloadCompelete = true;
-        UpdateScene();
+        InitializedScene();
     }
     #endregion
 

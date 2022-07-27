@@ -139,7 +139,6 @@ public class t_SclectPanel : MonoBehaviour
     }
     IEnumerator GetNameAndID()
     {
-        //string url = "https://api.dreamin.land/game_name/";//previous download link
         string url = "https://api.dreamin.land/info_get/";//get all scripts info
         using (UnityWebRequest webRequest = UnityWebRequest.Get(url))
         {

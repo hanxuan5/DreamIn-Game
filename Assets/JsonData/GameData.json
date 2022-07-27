@@ -1,1 +1,51 @@
-{"status":"OK","code":1,"game_doc":"{"_id": "62de2aecf6cee00230593f11", "name": "debugger2", "players_num": "2", "final": "wredgs", "map": [{"title": "fwf", "duration": "2", "end": "fagbwrh", "background": "Maps/Mixed/Bar", "collide_map": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;", "map_object": []}, {"title": "wq", "duration": "13", "end": "fdwqfse", "background": "Maps/Mixed/Beach", "collide_map": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;22,;16,18,19,;16,22,;17,24,;23,;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;", "map_object": [{"image_link": "Objects/Decoration/balloons_heart_down", "position": "[-50.76923,-16.15385,0]", "message": ""}, {"image_link": "Objects/Decoration/balloons_heart_down", "position": "[-47.07692,82.61539,0]", "message": ""}, {"image_link": "Objects/Decoration/balloons_heart_down", "position": "[55.38462,107.5385,0]", "message": ""}, {"image_link": "Objects/Decoration/balloons_heart_down", "position": "[125.5385,68.76923,0]", "message": ""}, {"image_link": "Objects/Decoration/balloons_heart_down", "position": "[144.9231,-37.38462,0]", "message": ""}, {"image_link": "Objects/Decoration/balloons_heart_down", "position": "[110.7692,-67.84615,0]", "message": ""}, {"image_link": "Objects/Decoration/balloons_heart_down", "position": "[5.538462,-107.5385,0]", "message": ""}, {"image_link": "Objects/Decoration/banner_ox_down", "position": "[-153.2308,81.69231,0]", "message": ""}, {"image_link": "Objects/Decoration/banner_ox_down", "position": "[-172.6154,117.6923,0]", "message": ""}, {"image_link": "Objects/Decoration/banner_ox_down", "position": "[-105.2308,79.84615,0]", "message": ""}, {"image_link": "Objects/Decoration/banner_ox_down", "position": "[-149.5385,-46.61538,0]", "message": ""}, {"image_link": "Objects/Decoration/banner_ox_down", "position": "[-188.3077,-67.84615,0]", "message": ""}, {"image_link": "Objects/Decoration/banner_ox_down", "position": "[-50.76923,-98.30769,0]", "message": ""}]}], "character": [{"name": "123", "identity": 0, "background": "456"}, {"name": "21432", "identity": 1, "background": "fawf"}]}"}
+{
+  "status": "OK",
+  "code": 1,
+  "game_doc": {
+    "_id": "62d83a3c6eb4b17714cda314",
+    "name": "Debugger",
+    "players_num": "1",
+    "final": "153468",
+    "map": [
+      {
+        "title": "firstone",
+        "duration": "1",
+        "end": "153",
+        "background": "Maps/InDoor/Battle",
+        "collide_map": ";;;;;;;;;;;;15,16,17,18,;15,16,17,18,24,25,;15,16,17,18,24,25,;15,16,17,18,;;;;;;;;;;;;;;;;;;;;",
+        "map_object": [
+          {
+            "image_link": "Objects/Decoration/rug_purple_down",
+            "position": "[-8.307693,111.2308,0]",
+            "message": ""
+          },
+          {
+            "image_link": "Objects/Decoration/rug_purple_down",
+            "position": "[344.3077,-20.76923,0]",
+            "message": ""
+          },
+          {
+            "image_link": "Objects/Decoration/pumpkin_orange_down",
+            "position": "[255.6923,117.6923,0]",
+            "message": ""
+          }
+        ]
+      },
+      {
+        "title": "second",
+        "duration": "2",
+        "end": "daf",
+        "background": "Maps/InDoor/Cozy Room",
+        "collide_map": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+        "map_object": []
+      }
+    ],
+    "character": [
+      {
+        "name": "fds",
+        "identity": 0,
+        "background": "3fds"
+      }
+    ]
+  }
+}

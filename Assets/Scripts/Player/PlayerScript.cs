@@ -18,7 +18,7 @@ public class PlayerScript : MonoBehaviour
 
     internal string playerName;
     private int playerIndex;
-    private int playerIdentity;
+    //private int playerIdentity;
     private GameData gameData;
 
     private Rigidbody2D body;
@@ -107,7 +107,7 @@ public class PlayerScript : MonoBehaviour
         playerIndex = index;
         SetPlayerName(gameData.character[playerIndex].name);
 
-        playerIdentity = gameData.character[playerIndex].identity;
+        //playerIdentity = gameData.character[playerIndex].identity;
     }
 
     public void SetPlayerName(string name)
@@ -137,22 +137,22 @@ public class PlayerScript : MonoBehaviour
         return playerName;
     }
 
-    public string GetPlayerIdentity()
-    {
-        switch (playerIdentity)
-        {
-            case 0:
-                return "Detective";
-            case 1:
-                return "Murderer";
-            case 2:
-                return "Suspect";
-            default:
-                Debug.LogError("wrong identity info!");
-                break;
-        }
-        return "";
-    }
+    //public string GetPlayerIdentity()
+    //{
+    //    switch (playerIdentity)
+    //    {
+    //        case 0:
+    //            return "Detective";
+    //        case 1:
+    //            return "Murderer";
+    //        case 2:
+    //            return "Suspect";
+    //        default:
+    //            Debug.LogError("wrong identity info!");
+    //            break;
+    //    }
+    //    return "";
+    //}
     public string GetPlayerInfo()
     {
         return gameData.character[playerIndex].background;

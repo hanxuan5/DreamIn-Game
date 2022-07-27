@@ -88,7 +88,6 @@ public class GameData
     public string _id;
     public string name;
     public string players_num;
-    public string final;
 
     public List<GameMap> map;
     public List<GameCharacter> character;
@@ -99,8 +98,9 @@ public class GameMap
     public string title;
     public string duration;
     public string end;
+    public string question;
+    public List<string> answers;
     public string background;
-
     public string collide_map;
     public List<PlacedObject> map_object; //The average number is 150, but most object messages are empty strings
 
@@ -133,7 +133,6 @@ public class PlacedObject
 public class GameCharacter
 {
     public string name;
-    public int identity;
     public string background;
 
     public Texture2D characterTexture;
