@@ -206,7 +206,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         mapIndex++;
         //if this is the last map
-        if (mapIndex == gameData.map.Count)
+        if (mapIndex >= gameData.map.Count)
         {
             //Set and show end text
             EndText.text = gameData.map[mapIndex-1].end;
@@ -405,8 +405,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     void RPCDownloadGameData(string ID)
     {
         StartCoroutine(GetGameData(ID));
-        //TestGameData();
+        //TestGameData
     }
+
+    //test method, for debug
     void TestGameData()
     {
         //Manually remove double quotation marks

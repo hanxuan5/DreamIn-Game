@@ -24,11 +24,11 @@ public class TestManager: MonoBehaviourPunCallbacks
     public GameObject mapPrefab;
     public GameObject colliderPrefab;
     public GameObject objectInfoPanel;
+    public GameObject questionPanel;
     public GameObject currentMap;
 
     public TMP_Text PlayerInfoText;
     public TMP_Text PlayerNameText;
-    //public TMP_Text PlayerIdentityText;
     public TMP_Text EndText;
     public TMP_Text TimerText;
 
@@ -57,24 +57,7 @@ public class TestManager: MonoBehaviourPunCallbacks
     void SetPlayerInfoPanel(GameCharacter character)
     {
         PlayerNameText.text = "Your name is " + character.name;
-        //PlayerIdentityText.text = "You are a " + GetPlayerIdentity(character.identity);
         PlayerInfoText.text = character.background;
-    }
-    public string GetPlayerIdentity(int identity)
-    {
-        switch (identity)
-        {
-            case 0:
-                return "Detective";
-            case 1:
-                return "Murderer";
-            case 2:
-                return "Suspect";
-            default:
-                Debug.LogError("wrong identity info!");
-                break;
-        }
-        return "";
     }
     public void InitializedScene()
     {
@@ -92,7 +75,6 @@ public class TestManager: MonoBehaviourPunCallbacks
         {
             mapIndex = 0;
             UpdateMap(mapIndex);
-            mapIndex++;
         }
     } 
     void UpdateMap(int index)
@@ -171,6 +153,7 @@ public class TestManager: MonoBehaviourPunCallbacks
 
         //Set Final Text
         EndText.text = gameData.map[index].end;
+
     }
 
     void SetTimerText(int t)
@@ -228,8 +211,9 @@ public class TestManager: MonoBehaviourPunCallbacks
     #region Button
     public void NextLevel()
     {
+        mapIndex++;
         //if this is the last map, show 
-        if (mapIndex == gameData.map.Count)
+        if (mapIndex >= gameData.map.Count)
         {
             Debug.Log("This is the last map");
         }
@@ -237,13 +221,8 @@ public class TestManager: MonoBehaviourPunCallbacks
         {
             EndText.transform.parent.parent.gameObject.SetActive(true);
             UpdateMap(mapIndex);
-            mapIndex++;
-
-            GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in playerObj)
-            {
-                player.transform.localPosition = Vector2.zero;
-            }
+            
+            localPlayer.transform.position = Vector3.zero;
         }
     }
 
@@ -273,6 +252,19 @@ public class TestManager: MonoBehaviourPunCallbacks
     public void NoPassButton()
     {
         StartCoroutine(ChangeStatus(int.Parse(gameDataID), 0));
+    }
+
+    public void QuestionButton()
+    {
+        questionPanel.gameObject.SetActive(true);
+        questionPanel.GetComponent<t_QuestionPanel>().QuestionText.text = gameData.map[mapIndex].question;
+        questionPanel.GetComponent<t_QuestionPanel>().AnswerText.text = "-----------------------------------------\n";
+        for (int i = 0; i < gameData.map[mapIndex].answers.Count; i++)
+        {
+            questionPanel.GetComponent<t_QuestionPanel>().AnswerText.text += gameData.map[mapIndex].answers[i] + "\n";
+            questionPanel.GetComponent<t_QuestionPanel>().AnswerText.text += "-----------------------------------------\n";
+        }
+
     }
 
     IEnumerator ChangeStatus(int id, int status)
