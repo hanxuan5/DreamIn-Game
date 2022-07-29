@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public TMP_Text PlayerInfoText;
     public TMP_Text PlayerNameText;
-    //public TMP_Text PlayerIdentityText;
     public TMP_Text EndText;
     public TMP_Text TimerText;
     public TMP_Text ObjectInfoText;
@@ -47,7 +46,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private int countTime = 0;
     private bool isDownloadCompelete=false;
     private int ColliderSize = 32;
-    private int mapIndex = 0;
+    public int mapIndex = 0;
 
     public void Start()
     {
@@ -192,49 +191,40 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
     /// <summary>
-    /// Call this method when the countdown is over or the finish button is clicked
+    /// Call this method after question part
     /// </summary>
     void LevelCompelete()
     {
         if(PhotonNetwork.IsMasterClient)
+        {
             GM_PhotonView.RPC("RPCLevelCompelete", RpcTarget.All);
+        }
     }
 
     [PunRPC]
     void RPCLevelCompelete()
     {
+        mapIndex++;
         //if this is the last map
-        if (mapIndex == gameData.map.Count-1)
+        if (mapIndex == gameData.map.Count)
         {
             //Set and show end text
-            EndText.text = gameData.map[mapIndex].end;
+            EndText.text = gameData.map[mapIndex-1].end;
             EndText.transform.parent.parent.gameObject.SetActive(true);
 
-            if (PhotonNetwork.IsMasterClient)
-            {
-                mapIndex = -1;//reach the end
-                GM_PhotonView.RPC("RPCSetMapIndex", RpcTarget.All, mapIndex);
-            }
+            mapIndex = -1;
         }
         else
         {
             //Set and show end text
-            EndText.text = gameData.map[mapIndex].end;
+            EndText.text = gameData.map[mapIndex-1].end;
             EndText.transform.parent.parent.gameObject.SetActive(true);
 
-            if (PhotonNetwork.IsMasterClient)
-            {
-                mapIndex++;
-                GM_PhotonView.RPC("RPCSetMapIndex", RpcTarget.All, mapIndex);
-            }
             UpdateMap(mapIndex);
             StartCountTime(countTime);//restart count time
 
-            GameObject[] playerObj = GameObject.FindGameObjectsWithTag("Player");
-            foreach (GameObject player in playerObj)
-            {
-                player.transform.localPosition = Vector2.zero;
-            }
+            //reset player's position
+            localPlayer.transform.localPosition = Vector2.zero;
         }
     }
 
@@ -270,6 +260,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         objectInfoPanel.SetActive(true);
     }
 
+    [PunRPC]
+    void RPCSetMapIndex(int index)
+    {
+        mapIndex = index;
+    }
     [PunRPC]
     void RPCShowSelectPanel()
     {
@@ -383,11 +378,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     }
 
-    [PunRPC]
-    void RPCSetMapIndex(int index)
-    {
-        mapIndex = index;
-    }
+
 
     #endregion
 
@@ -413,8 +404,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     [PunRPC]
     void RPCDownloadGameData(string ID)
     {
-        //StartCoroutine(GetGameData(ID));
-        TestGameData();
+        StartCoroutine(GetGameData(ID));
+        //TestGameData();
     }
     void TestGameData()
     {
@@ -659,5 +650,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     }
 
 
-#endregion
+    #endregion
+
+    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    //{
+    //    if (stream.IsWriting)
+    //    {
+    //        stream.SendNext(mapIndex);
+    //    }
+    //    else
+    //    {
+    //        mapIndex = (int)stream.ReceiveNext();
+    //    }
+    //}
 }
+
+

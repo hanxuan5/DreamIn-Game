@@ -150,9 +150,11 @@ public class SelectPanel : MonoBehaviour
             }
             else
             {
+#if UNITY_EDITOR
                 //Save a data backup for debug
                 string savePath = "Assets/JsonData/ScriptData.json";
                 File.WriteAllText(savePath, Regex.Unescape(webRequest.downloadHandler.text));
+#endif
 
                 sj = JsonMapper.ToObject<ScriptsJsonData>(webRequest.downloadHandler.text);
                 CreateScriptItem(sj.infos);

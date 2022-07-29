@@ -2,39 +2,26 @@
   "status": "OK",
   "code": 1,
   "game_doc": {
-    "_id": "62d83a3c6eb4b17714cda314",
-    "name": "Debugger",
-    "players_num": "1",
-    "final": "153468",
+    "_id": "62e346766315d71fb1394ecc",
+    "name": "debug3",
+    "players_num": "2",
     "map": [
       {
-        "title": "firstone",
-        "duration": "1",
-        "end": "153",
+        "title": "efw",
+        "duration": "21",
+        "end": "dsfas",
+        "question": "efw",
+        "answers": [ "gsg", "hre", "vbx", "gfd" ],
         "background": "Maps/InDoor/Battle",
-        "collide_map": ";;;;;;;;;;;;15,16,17,18,;15,16,17,18,24,25,;15,16,17,18,24,25,;15,16,17,18,;;;;;;;;;;;;;;;;;;;;",
-        "map_object": [
-          {
-            "image_link": "Objects/Decoration/rug_purple_down",
-            "position": "[-8.307693,111.2308,0]",
-            "message": ""
-          },
-          {
-            "image_link": "Objects/Decoration/rug_purple_down",
-            "position": "[344.3077,-20.76923,0]",
-            "message": ""
-          },
-          {
-            "image_link": "Objects/Decoration/pumpkin_orange_down",
-            "position": "[255.6923,117.6923,0]",
-            "message": ""
-          }
-        ]
+        "collide_map": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+        "map_object": []
       },
       {
-        "title": "second",
+        "title": "fwe",
         "duration": "2",
-        "end": "daf",
+        "end": "fsdf",
+        "question": "gdgre",
+        "answers": [ "gdfsg", "gdf", "gfds", "ggr" ],
         "background": "Maps/InDoor/Cozy Room",
         "collide_map": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
         "map_object": []
@@ -42,10 +29,14 @@
     ],
     "character": [
       {
-        "name": "fds",
-        "identity": 0,
-        "background": "3fds"
+        "name": "123fas",
+        "background": "few"
+      },
+      {
+        "name": "ewftt",
+        "background": "fgds"
       }
+    
     ]
   }
 }

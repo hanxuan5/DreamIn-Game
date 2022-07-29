@@ -44,11 +44,11 @@
         ]
       }
     ],
-    "character": [
-      {
-        "name": "wdfa",
-        "background": "afasdf"
-      }
-    ]
+  "character": [
+    {
+      "name": "wdfa",
+      "background": "afasdf"
+    }
+  ]
   }"
 }
