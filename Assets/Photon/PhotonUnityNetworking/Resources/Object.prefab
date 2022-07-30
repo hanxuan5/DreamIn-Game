@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -0.000012159, y: 51.1}
-  m_SizeDelta: {x: 784.0612, y: 169.0874}
+  m_SizeDelta: {x: 458.3727, y: 85.5779}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1538534079394826090
 CanvasRenderer:
@@ -275,7 +275,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 64.65965
+  m_Radius: 47.117485
 --- !u!114 &8558312213418970233
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -290,7 +290,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tipText: {fileID: 5573439756336344547}
   objectInfoPanel: {fileID: 0}
-  shareButton: {fileID: 0}
+  GM: {fileID: 0}
   objectInfo: 
   CluePanel: {fileID: 0}
 --- !u!114 &-2332459649069042875

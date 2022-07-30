@@ -50,6 +50,9 @@ public class PlayerScript : MonoBehaviour
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
+        h *= Mathf.Sqrt(1 - (v * v) / 2.0f);
+        v *= Mathf.Sqrt(1 - (h * h) / 2.0f);
+
         Vector2 dir = new Vector2(h, v);
         body.velocity = dir * runSpeed;
 

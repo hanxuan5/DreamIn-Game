@@ -21,8 +21,8 @@ public class PlayerMove : MonoBehaviourPun
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
         Vector2 pos = transform.position;
-        pos.x += h * moveSpeed * Time.deltaTime;
-        pos.y += v * moveSpeed * Time.deltaTime;
+        pos.x += h * Mathf.Sqrt(1 - (v * v) / 2.0f) * moveSpeed * Time.deltaTime;
+        pos.y += v *Mathf.Sqrt(1 - (h * h) / 2.0f)*moveSpeed * Time.deltaTime;
         transform.position = pos;
     }
 }
