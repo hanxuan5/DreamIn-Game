@@ -17,8 +17,8 @@ public class PlayerScript : MonoBehaviour
     internal PhotonView photonView;
 
     internal string playerName;
+    internal bool canMove=false;
     private int playerIndex;
-    //private int playerIdentity;
     private GameData gameData;
 
     private Rigidbody2D body;
@@ -46,6 +46,8 @@ public class PlayerScript : MonoBehaviour
     {
         if (!photonView.IsMine && PhotonNetwork.IsConnected)
             return;
+
+        if (!canMove) return;
 
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");

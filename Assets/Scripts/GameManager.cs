@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         cluesButton.SetActive(true);
     }
 
-    public void InitializedScene()
+    public void InitializeScene()
     {
         //set Player
         {
@@ -274,6 +274,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         questionPanel.GetComponent<QuestionPanel>().CreateAnswerItem(gameData.map[mapIndex].answers);
     }
 
+    [PunRPC]
+    void SetPlayerMove(bool canMove)
+    {
+        localPlayer.GetComponent<PlayerScript>().canMove = canMove;
+    }
+
     #region Button
     public void WatchButton()
     {
@@ -343,6 +349,8 @@ public class GameManager : MonoBehaviourPunCallbacks
             selectedIndex.Add(index);
             playerObj[i].GetComponent<PlayerScript>().SetPlayerData(index);
         }
+        //now all players can move
+        GM_PhotonView.RPC("SetPlayerMove", RpcTarget.All, true);
 
         GM_PhotonView.RPC("RPCInitializedGame", RpcTarget.All);
 
@@ -553,7 +561,7 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
         Debug.Log("Download Compelete!");
         isDownloadCompelete = true;
-        InitializedScene();
+        InitializeScene();
     }
 #endregion
 
@@ -654,17 +662,6 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     #endregion
 
-    //public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    //{
-    //    if (stream.IsWriting)
-    //    {
-    //        stream.SendNext(mapIndex);
-    //    }
-    //    else
-    //    {
-    //        mapIndex = (int)stream.ReceiveNext();
-    //    }
-    //}
 }
 
 
